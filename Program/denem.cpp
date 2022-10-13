@@ -18,6 +18,21 @@ class kiyafet{ //Kıyafe sınıfı
     char* boyut;
     char* renk;
     public: //Yapıcı fonksiyon
+    void setSaat(int s){ //Saat değerini ayarlar
+        saat = s;
+    }
+    void setDakika(int d){ //Dakika değerini ayarlar
+        dakika = d;
+    }
+    int getSaat(){ //Saat değerini döndürür
+        return saat;
+    }
+    int getDakika(){ //Dakika değerini döndürür
+        return dakika;
+    }
+    void yazdir(){ //Saat ve dakika değerlerini ekrana yazdırır
+        cout << saat << ":" << dakika << endl;
+    }
 
 };
 
