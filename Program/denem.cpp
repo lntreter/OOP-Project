@@ -7,17 +7,6 @@ class zaman{ //Zaman Sınıfı
     int saat;
     int dakika;
     public:
-
-};
-
-class kiyafet{ //Kıyafe sınıfı
-    private:
-    char *kategori;
-    char kiyafet_adi;
-    double fiyat;
-    char* boyut;
-    char* renk;
-    public: //Yapıcı fonksiyon
     void setSaat(int s){ //Saat değerini ayarlar
         saat = s;
     }
@@ -33,6 +22,17 @@ class kiyafet{ //Kıyafe sınıfı
     void yazdir(){ //Saat ve dakika değerlerini ekrana yazdırır
         cout << saat << ":" << dakika << endl;
     }
+
+};
+
+class kiyafet{ //Kıyafe sınıfı
+    private:
+    char *kategori;
+    char kiyafet_adi;
+    double fiyat;
+    char* boyut;
+    char* renk;
+    public: //Yapıcı fonksiyon
 
 };
 
