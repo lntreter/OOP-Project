@@ -1,4 +1,5 @@
 #include<iostream>
+#include<vector>
 
 using namespace std;
 
@@ -44,12 +45,28 @@ class zaman{ //Zaman Sınıfı
 
 class kiyafet{ //Kıyafe sınıfı
     private:
+    vector <kiyafet> kiyafetler;
     char *kategori;
     char kiyafet_adi;
     double fiyat;
     char* boyut;
     char* renk;
     public: //Yapıcı fonksiyon
+    kiyafet(char *k, char ka, double f, char *b, char *r){
+        kategori = k;
+        kiyafet_adi = ka;
+        fiyat = f;
+        boyut = b;
+        renk = r;
+    }
+    kiyafet(); //Yapıcı fonksiyon
+
+    void setKiyafetler(vector <kiyafet> k){
+        kiyafetler = k;
+    }
+    vector <kiyafet> getKiyafetler(){
+        return kiyafetler;
+    }
     void setKategori(char *k){
         kategori = k;
     }
@@ -87,6 +104,49 @@ class kiyafet{ //Kıyafe sınıfı
         cout << "Boyut: " << boyut << endl;
         cout << "Renk: " << renk << endl;
     }
+    void ekle(kiyafet k){
+        kiyafetler.push_back(k);
+    }
+    void sil(char k){
+        for(int i = 0; i < kiyafetler.size(); i++){
+            if(kiyafetler[i].getKiyafetAdi() == k){
+                kiyafetler.erase(kiyafetler.begin() + i);
+            }
+        }
+    }
+    void guncelle(char k, kiyafet k1){
+        for(int i = 0; i < kiyafetler.size(); i++){
+            if(kiyafetler[i].getKiyafetAdi() == k){
+                kiyafetler[i] = k1;
+            }
+        }
+    }
+    void listele(){ //Kıyafetleri listeler
+        for(int i = 0; i < kiyafetler.size(); i++){
+            kiyafetler[i].yazdir();
+        }
+    }
+    void listele(char *k){ //Kategoriye göre listeleme
+        for(int i = 0; i < kiyafetler.size(); i++){
+            if(kiyafetler[i].getKategori() == k){
+                kiyafetler[i].yazdir();
+            }
+        }
+    }
+    void listele(char *r){ //Renge göre listeleme
+        for(int i = 0; i < kiyafetler.size(); i++){
+            if(kiyafetler[i].getRenk() == r){
+                kiyafetler[i].yazdir();
+            }
+        }
+    }
+    void listele(double f){ //Fiyata göre listeleme
+        for(int i = 0; i < kiyafetler.size(); i++){
+            if(kiyafetler[i].getFiyat() == f){
+                kiyafetler[i].yazdir();
+            }
+        }
+    }
 
 };
 
@@ -117,11 +177,18 @@ class kisi{
 
 class siparis : kiyafet{
     private:
+    vector<siparis> siparisler;
     int siparis_No;
     double siparis_fiyat;
     zaman siparis_baslangic;
     zaman siparis_ulasim;
     public:
+    void setSiparisler(vector<siparis> s){
+        siparisler = s;
+    }
+    vector <siparis> getSiparisler(){
+        return siparisler;
+    }
     void setSiparisNo(int s){
         siparis_No = s;
     }
@@ -152,7 +219,29 @@ class siparis : kiyafet{
         cout << "Siparis Baslangic: " << siparis_baslangic << endl;
         cout << "Siparis Ulasim: " << siparis_ulasim << endl;
     }
-
+    int siparisSure(){
+        int sure = 0;
+        sure = (siparis_ulasim.getSaat() - siparis_baslangic.getSaat()) * 60;
+        sure += (siparis_ulasim.getDakika() - siparis_baslangic.getDakika());
+        return sure;
+    }
+    void siparisEkle(siparis s){
+        siparisler.push_back(s);
+    }
+    void siparisSil(int s){
+        siparisler.erase(siparisler.begin() + s);
+    }
+    void siparisGuncelle(int s, siparis g){
+        siparisler[s] = g;
+    }
+    void siparisListele(){
+        for(int i = 0; i < siparisler.size(); i++){
+            cout << "Siparis No: " << siparisler[i].getSiparisNo() << endl;
+            cout << "Siparis Fiyat: " << siparisler[i].getSiparisFiyat() << endl;
+            cout << "Siparis Baslangic: " << siparisler[i].getSiparisBaslangic() << endl;
+            cout << "Siparis Ulasim: " << siparisler[i].getSiparisUlasim() << endl;
+        }
+    }
 };
 
 class kullanici : kisi{
