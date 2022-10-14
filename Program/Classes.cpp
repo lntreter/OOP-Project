@@ -1,5 +1,6 @@
 #include<iostream>
 #include<vector>
+#include<string>
 
 using namespace std;
 
@@ -8,6 +9,11 @@ class zaman{ //Zaman Sınıfı
     int saat;
     int dakika;
     public:
+    //Kurucu Fonksiyon
+    zaman(int s=0,int d=0){
+        setSaat(s);
+        setDakika(d);
+    }
     void setSaat(int s){ //Saat değerini ayarlar
         saat = s;
     }
@@ -34,32 +40,32 @@ class zaman{ //Zaman Sınıfı
             saat = saat % 24;
         }
     }
-
-    friend ostream& operator<<(ostream &os, const zaman &z){
+    friend ostream& operator<<(ostream& os, const zaman& z){
+        os << z.saat << "." << z.dakika;
         return os;
     }
-
-
-
 };
 
 class kiyafet{ //Kıyafe sınıfı
     private:
-    vector <kiyafet> kiyafetler;
     char *kategori;
-    char kiyafet_adi;
+    string kiyafet_adi;
     double fiyat;
     char* boyut;
     char* renk;
-    public: //Yapıcı fonksiyon
-    kiyafet(char *k, char ka, double f, char *b, char *r){
-        kategori = k;
-        kiyafet_adi = ka;
-        fiyat = f;
-        boyut = b;
-        renk = r;
+    vector <kiyafet> kiyafetler;
+    public:
+    //Kurucu Fonksiyon
+    kiyafet(){};
+    kiyafet(char *k, string ka, double f, char* b, char* r){
+        setKategori(k);
+        setKiyafetAdi(ka);
+        setFiyat(f);
+        setBoyut(b);
+        setRenk(r);
     }
-    kiyafet(); //Yapıcı fonksiyon
+
+    //Kapsülleme fonksiyonları
 
     void setKiyafetler(vector <kiyafet> k){
         kiyafetler = k;
@@ -70,7 +76,7 @@ class kiyafet{ //Kıyafe sınıfı
     void setKategori(char *k){
         kategori = k;
     }
-    void setKiyafetAdi(char k){
+    void setKiyafetAdi(string k){
         kiyafet_adi = k;
     }
     void setFiyat(double f){
@@ -85,7 +91,7 @@ class kiyafet{ //Kıyafe sınıfı
     char* getKategori(){
         return kategori;
     }
-    char getKiyafetAdi(){
+    string getKiyafetAdi(){
         return kiyafet_adi;
     }
     double getFiyat(){
@@ -103,18 +109,19 @@ class kiyafet{ //Kıyafe sınıfı
         cout << "Fiyat: " << fiyat << endl;
         cout << "Boyut: " << boyut << endl;
         cout << "Renk: " << renk << endl;
+        cout << "---------------------------" << endl;
     }
     void ekle(kiyafet k){
         kiyafetler.push_back(k);
     }
-    void sil(char k){
+    void sil(kiyafet k){
         for(int i = 0; i < kiyafetler.size(); i++){
-            if(kiyafetler[i].getKiyafetAdi() == k){
+            if(kiyafetler[i].getKiyafetAdi() == k.getKiyafetAdi()){
                 kiyafetler.erase(kiyafetler.begin() + i);
             }
         }
     }
-    void guncelle(char k, kiyafet k1){
+    void guncelle(string k, kiyafet k1){
         for(int i = 0; i < kiyafetler.size(); i++){
             if(kiyafetler[i].getKiyafetAdi() == k){
                 kiyafetler[i] = k1;
@@ -126,21 +133,21 @@ class kiyafet{ //Kıyafe sınıfı
             kiyafetler[i].yazdir();
         }
     }
-    void listele(char *k){ //Kategoriye göre listeleme
+    void listeleK(char *k){ //Kategoriye göre listeleme
         for(int i = 0; i < kiyafetler.size(); i++){
             if(kiyafetler[i].getKategori() == k){
                 kiyafetler[i].yazdir();
             }
         }
     }
-    void listele(char *r){ //Renge göre listeleme
+    void listeleR(char *r){ //Renge göre listeleme
         for(int i = 0; i < kiyafetler.size(); i++){
             if(kiyafetler[i].getRenk() == r){
                 kiyafetler[i].yazdir();
             }
         }
     }
-    void listele(double f){ //Fiyata göre listeleme
+    void listeleF(double f){ //Fiyata göre listeleme
         for(int i = 0; i < kiyafetler.size(); i++){
             if(kiyafetler[i].getFiyat() == f){
                 kiyafetler[i].yazdir();
@@ -176,13 +183,14 @@ class kisi{
 };
 
 class siparis : kiyafet{
-    private:
+    protected:
     vector<siparis> siparisler;
     int siparis_No;
     double siparis_fiyat;
     zaman siparis_baslangic;
     zaman siparis_ulasim;
     public:
+    string deneme;
     void setSiparisler(vector<siparis> s){
         siparisler = s;
     }
@@ -216,8 +224,8 @@ class siparis : kiyafet{
     void yazdir(){
         cout << "Siparis No: " << siparis_No << endl;
         cout << "Siparis Fiyat: " << siparis_fiyat << endl;
-        cout << "Siparis Baslangic: " << siparis_baslangic << endl;
-        cout << "Siparis Ulasim: " << siparis_ulasim << endl;
+        cout << "Siparis Baslangic: " << getSiparisBaslangic() << endl;cout << "----" << endl;
+        cout << "Siparis Ulasim: " << getSiparisUlasim() << endl;
     }
     int siparisSure(){
         int sure = 0;
@@ -225,14 +233,17 @@ class siparis : kiyafet{
         sure += (siparis_ulasim.getDakika() - siparis_baslangic.getDakika());
         return sure;
     }
-    void siparisEkle(siparis s){
+    void siparisEkle(kiyafet k){
+        siparis s;
+        k = s;
         siparisler.push_back(s);
     }
-    void siparisSil(int s){
-        siparisler.erase(siparisler.begin() + s);
-    }
-    void siparisGuncelle(int s, siparis g){
-        siparisler[s] = g;
+    void siparisSil(kiyafet k){
+        for(int i = 0; i < siparisler.size(); i++){
+            if(siparisler[i].getKiyafetAdi() == k.getKiyafetAdi()){
+                siparisler.erase(siparisler.begin() + i);
+            }
+        }
     }
     void siparisListele(){
         for(int i = 0; i < siparisler.size(); i++){
@@ -343,11 +354,41 @@ class kurye : kisi{
 
 int main(){
 
-    zaman d;
-    d.setSaat(23);
-    d.setDakika(59);
-    d.gecikme(0, 70);
-    d.yazdir();
+    kiyafet k1, k2;
+    kiyafet sepet;
+    k1.setKategori("Elbise");
+    k1.setBoyut("M - (Medium)");
+    k1.setFiyat(100);
+    k1.setRenk("Kirmizi");
+    k1.setKiyafetAdi("Kazak");
+
+    k2.setKategori("Pantolon");
+    k2.setBoyut("L - (Large)");
+    k2.setFiyat(50);
+    k2.setRenk("Siyah");
+    k2.setKiyafetAdi("Kot Pantolon");
+
+    k1.yazdir();
+
+    sepet.ekle(k1);
+    sepet.ekle(k2);
+
+    sepet.listele();
+
+    sepet.sil(k2);
+
+    sepet.listele();
+
+    siparis s1;
+    zaman z1(12, 30),z2(13, 30);
+    s1.setSiparisNo(1);
+    s1.setSiparisFiyat(150);
+    s1.setSiparisBaslangic(z1);
+    s1.setSiparisUlasim(z2);
+    s1.yazdir();
+
+    
+
 
     return 0;
 }
