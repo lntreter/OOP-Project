@@ -4,7 +4,7 @@ OOP Fall Project for Object Orianted Programming lessons
 https://docs.google.com/document/d/1MdFfRV5glprAS4ROJQG3qC3l0QckXh4bcZvpPXSZzqU/edit
 
 Project summary (What the program has to have)
-- [❤️] Log in screen with registration(admin login and member login is in another screen with divided selections)
+- [x] Log in screen with registration(admin login and member login is in another screen with divided selections)
 - [ ] Login info is provided by users.txt file(both admins and members)
 - [ ] Admin privileges: System log file editor for clothes( can’t edit the categories), Courier edit menu,Complaint and suggestions showing up, Discount coupons given to members, Receipt showing up for the previous and current sales.
 - [ ] Member privileges: Cloth categories showing up and selecting clothes,  Info about the courier, Feedback pop-up ( complaint and suggestions), change password, turn back(page wise).
