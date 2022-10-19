@@ -1,8 +1,7 @@
 # OOP-Project
 OOP Fall Project for Object Orianted Programming lessons
 
-
-
+https://docs.google.com/document/d/1MdFfRV5glprAS4ROJQG3qC3l0QckXh4bcZvpPXSZzqU/edit
 
 Project summary (What the program has to have)
 - [ ] Log in screen with registration(admin login and member login is in another screen with divided selections)
