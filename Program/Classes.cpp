@@ -48,7 +48,7 @@ class zaman{ //Zaman Sınıfı
 };
 
 class kiyafet{ //Kıyafe sınıfı
-    private:
+    protected:
     char *kategori;
     string kiyafet_adi;
     double fiyat;
@@ -107,7 +107,6 @@ class kiyafet{ //Kıyafe sınıfı
     }
 };
 
-int listeBoyutu = 0;
 
 class kisi{//Kişi sınıfı
     private:
@@ -115,20 +114,15 @@ class kisi{//Kişi sınıfı
     string telNo;
     static int kisiSayisi;
     public:
+    static int listeBoyutu;
     kisi(){ 
         kisiSayisi++;
     };
     void setKisiSayisi(int k){
         kisiSayisi = k;
     }
-    void setListeBoyutu(int l){
-        listeBoyutu = l;
-    }
     int getKisiSayisi(){
         return kisiSayisi;
-    }
-    int getListeBoyutu(){
-        return listeBoyutu;
     }
     void setAdSoyad(string a){
         ad_soyad = a;
@@ -174,19 +168,20 @@ class kisi{//Kişi sınıfı
     }
 };
 
+int kisi::listeBoyutu = 0;
 int kisi::kisiSayisi = 0;
 
 class siparis : kiyafet
 {
-protected:
+private:
     int siparis_No;
     double siparis_fiyat;
     zaman siparis_baslangic;
     zaman siparis_ulasim;
-
-public:
     static int siparisSayisi;
-    siparis *siparisler;
+public:
+    static int listeBoyutu;
+    siparis(){siparisSayisi++;};
     void setSiparisNo(int s)
     {
         siparis_No = s;
@@ -202,6 +197,14 @@ public:
     void setSiparisUlasim(zaman u)
     {
         siparis_ulasim = u;
+    }
+    void setSiparisSayisi(int s)
+    {
+        siparisSayisi = s;
+    }
+    int getSiparisSayisi()
+    {
+        return siparisSayisi;
     }
     int getSiparisNo(){
         return siparis_No;
@@ -227,28 +230,42 @@ public:
         sure += (siparis_ulasim.getDakika() - siparis_baslangic.getDakika());
         return sure;
     }
-    void olusuturSiparisler(){
-        siparisler = new siparis[siparisSayisi];
-    }
-    void siparisEkle(siparis s){
-        siparisler[siparisSayisi-1] = s;
-    }
-    void siparisSil(int i){
-        for(int j = i; j < siparisSayisi; j++){
-            siparisler[j] = siparisler[j+1];
+    static void siparisEkle(siparis s,siparis *liste[]){
+        if(listeBoyutu < siparisSayisi){
+            liste[listeBoyutu] = &s;
+            listeBoyutu++;
         }
-        siparisSayisi--;
-    }
-    void siparisGuncelle(int i, siparis s){
-        siparisler[i] = s;
-    }
-    void siparisListele(){
-        for(int i = 0; i < siparisSayisi; i++){
-            siparisler[i].yazdir();
+        else{
+            cout << "Liste dolu" << endl;
         }
     }
+    static void siparisSil(siparis s, siparis *liste[]){
+        for(int i=0;i<listeBoyutu;i++){
+            if(liste[i]->getSiparisNo() == s.getSiparisNo()){
+                for(int j=i;j<listeBoyutu;j++){
+                    liste[j] = liste[j+1];
+                }
+                listeBoyutu--;
+            }
+        }
+    }
+    static void siparisGuncelle(siparis s, siparis *liste[]){
+        for(int i=0;i<listeBoyutu;i++){
+            if(liste[i]->getSiparisNo() == s.getSiparisNo()){
+                liste[i] = &s;
+            }
+        }
+    }
+    static void siparisListele(siparis *liste[]){
+        for(int i=0;i<listeBoyutu;i++){
+            liste[i]->yazdir();
+            cout << "---------------------" << endl;
+        }
+        cout << endl;
+    }
+    
 };
-
+int siparis::listeBoyutu = 0;
 int siparis::siparisSayisi = 0;
 
 class kullanici : kisi{
@@ -361,7 +378,7 @@ class kurye : kisi{
 };
 
 int main(){
-    kisi k,k2,*liste[listeBoyutu];
+    kisi k,k2,*liste[kisi::listeBoyutu];
     k.setAdSoyad("Ali Yılmaz");
     k.setTelNo("0532 123 45 67");
     k2.setAdSoyad("Ahmet Yılmaz");
@@ -370,6 +387,19 @@ int main(){
     kisi::yazdirListe(liste);
     kisi::ekle(&k2,liste);
     kisi::yazdirListe(liste);
+    siparis s,s2,*liste2[siparis::listeBoyutu];
+    zaman z(12,30),z2(13,30),z3(14,30),z4(15,30);
+    s.setSiparisNo(1);
+    s.setSiparisFiyat(100);
+    s.setSiparisBaslangic(z);
+    s.setSiparisUlasim(z2);
+    s2.setSiparisNo(2);
+    s2.setSiparisFiyat(200);
+    s2.setSiparisBaslangic(z3);
+    s2.setSiparisUlasim(z4);
+    siparis::siparisEkle(s,liste2);
+    siparis::siparisEkle(s2,liste2);
+    siparis::siparisListele(liste2);
 
     return 0;
 }
