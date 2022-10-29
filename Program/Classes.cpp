@@ -113,11 +113,17 @@ class kisi{//Kişi sınıfı
     string ad_soyad;
     string telNo;
     static int kisiSayisi;
-    public:
     static int listeBoyutu;
+    public:
     kisi(){ 
         kisiSayisi++;
     };
+    static void setListeBoyutu(int l){
+        listeBoyutu = l;
+    }
+    static int getListeBoyutu(){
+        return listeBoyutu;
+    }
     void setKisiSayisi(int k){
         kisiSayisi = k;
     }
@@ -179,9 +185,15 @@ private:
     zaman siparis_baslangic;
     zaman siparis_ulasim;
     static int siparisSayisi;
-public:
     static int listeBoyutu;
+public:
     siparis(){siparisSayisi++;};
+    static void setListeBoyutu(int l){
+        listeBoyutu = l;
+    }
+    static int getListeBoyutu(){
+        return listeBoyutu;
+    }
     void setSiparisNo(int s)
     {
         siparis_No = s;
@@ -378,7 +390,9 @@ class kurye : kisi{
 };
 
 int main(){
-    kisi k,k2,*liste[kisi::listeBoyutu];
+    const int listSize = 100;
+
+    kisi k,k2,*liste[listSize];
     k.setAdSoyad("Ali Yılmaz");
     k.setTelNo("0532 123 45 67");
     k2.setAdSoyad("Ahmet Yılmaz");
@@ -387,7 +401,7 @@ int main(){
     kisi::yazdirListe(liste);
     kisi::ekle(&k2,liste);
     kisi::yazdirListe(liste);
-    siparis s,s2,*liste2[siparis::listeBoyutu];
+    siparis s,s2,*liste2[listSize];
     zaman z(12,30),z2(13,30),z3(14,30),z4(15,30);
     s.setSiparisNo(1);
     s.setSiparisFiyat(100);
