@@ -1,6 +1,7 @@
 #include<iostream>
 #include<string>
 #include<fstream>
+#include<limits>
 
 using namespace std;
 
@@ -396,6 +397,7 @@ class Courier : Person {
 };
 
 int admin = -1;
+bool menu = true;
 
 void mainMenu();
 void SystemLogin();
@@ -469,19 +471,23 @@ void userLogin(){
 
     bool tf = false;
 
-    while(!dosya.eof()){
-        getline(dosya, line);
-        if (passCheck == line){
-            cout << "Bilgiler Doğru! Giriş Yapılıyor... " << endl;
-            cout << endl;
-            admin = 0;
-            tf = true;
+    if(dosya.is_open()){
+        while(!dosya.eof()){
+            getline(dosya, line);
+            int offset;
+            if ((offset = line.find(passCheck, 0)) != string::npos){
+                cout << "Bilgiler Doğru! Giriş Yapılıyor... " << endl;
+                cout << endl;
+                admin = 0;
+                tf = true;
+            }
         }
-        else if(!tf){
-            cout << "Bilgileriniz Yanlış! Lütfen Tekrar Deneyiniz. " << endl;
-            cout << endl;
-            userLogin();
-        }
+    }
+
+    if(!tf){
+        cout << "Bilgileriniz Yanlış! Lütfen Tekrar Deneyiniz. " << endl;
+        cout << endl;
+        userLogin();
     }
 
     if (tf) {
@@ -494,7 +500,24 @@ void SystemLogin(){
     cout << "1. Yönetici Girişi " << endl;
     cout << "2. Müşteri Girişi " << endl;
     cout << "3. Ana Menüye Geri Dön " << endl;
-    cin >> c;
+    
+    try
+    {
+        if(!(cin >> c)){
+        throw 505;
+        } 
+    }
+    catch(int hata)
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cerr << "Hatalı bir giriş yaptınız lütfen tekrar deneyin ! Hata kodu: " << hata << endl;
+        cout << endl;
+        cout << "1. Yönetici Girişi " << endl;
+        cout << "2. Müşteri Girişi " << endl;
+        cout << "3. Ana Menüye Geri Dön " << endl;
+        cin >> c;
+    }
 
     switch (c){
         case 1:
@@ -516,9 +539,11 @@ void SystemLogin(){
     }
 }
 
+
 void mainMenu(){
 
     int choice;
+    bool r = true;
 
     switch (admin)
     {
@@ -526,7 +551,25 @@ void mainMenu(){
         cout << "1. Sisteme Giriş" << endl;
         cout << "2. Üye Kaydı" << endl;
         cout << "3. Çıkış" << endl;
-        cin >> choice;
+
+        try
+        {
+            if(!(cin >> choice)){
+                throw 505;
+            } 
+        }
+        catch(int hata)
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cerr << "Hatalı bir giriş yaptınız lütfen tekrar deneyin ! Hata kodu: " << hata << endl;
+            cout << endl;
+            cout << "1. Sisteme Giriş" << endl;
+            cout << "2. Üye Kaydı" << endl;
+            cout << "3. Çıkış" << endl;
+            cin >> choice;
+        }
+        
 
         switch (choice)
         {
@@ -542,6 +585,7 @@ void mainMenu(){
                 break;
             case 3:
                 cout << "Çıkış yapılıyor..." << endl;
+                menu = false;
                 break;
             default:
                 cout << "Hatalı seçim!" << endl;
@@ -554,7 +598,26 @@ void mainMenu(){
         cout << "3. Şikayet - Öneri (Geri Bildirimler) " << endl;
         cout << "4. Oturumu Kapat " << endl;
         cout << "5. Çıkış " << endl;
-        cin >> choice;
+        
+        try
+        {
+            if(!(cin >> choice)){
+                throw 505;
+            } 
+        }
+        catch(int hata)
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cerr << "Hatalı bir giriş yaptınız lütfen tekrar deneyin ! Hata kodu: " << hata << endl;
+            cout << endl;
+            cout << "1. Sipariş Ver " << endl;
+            cout << "2. Siparişleri Görüntüle " << endl;
+            cout << "3. Şikayet - Öneri (Geri Bildirimler) " << endl;
+            cout << "4. Oturumu Kapat " << endl;
+            cout << "5. Çıkış " << endl;
+            cin >> choice;
+        }
 
         switch (choice)
         {
@@ -573,9 +636,11 @@ void mainMenu(){
                 break;
             case 5:
                 cout << "Çıkış yapılıyor..." << endl;
+                menu = false;
                 break;
             default:
                 cout << "Hatalı seçim!" << endl;
+                mainMenu();
                 break;
         }
         break;
@@ -587,7 +652,28 @@ void mainMenu(){
         cout << "5. İndirim Kodu Tanımla " << endl;
         cout << "6. Oturumu Kapat " << endl;
         cout << "7. Çıkış " << endl;
-        cin >> choice;
+        
+        try
+        {
+            if(!(cin >> choice)){
+                throw 505;
+            } 
+        }
+        catch(int hata)
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cerr << "Hatalı bir giriş yaptınız lütfen tekrar deneyin ! Hata kodu: " << hata << endl;
+            cout << endl;
+            cout << "1. Siparişleri Görüntüle / Düzenle " << endl;
+            cout << "2. Ürünleri Görüntüle / Düzenle " << endl;
+            cout << "3. Kuryeleri Düzenle " << endl;
+            cout << "4. Şikayet - Öneri (Geri Bildirimler) " << endl;
+            cout << "5. İndirim Kodu Tanımla " << endl;
+            cout << "6. Oturumu Kapat " << endl;
+            cout << "7. Çıkış " << endl;
+            cin >> choice;
+        }
         
         switch (choice)
         {
@@ -608,12 +694,14 @@ void mainMenu(){
             break;
         case 6:
             cout << "Oturum Kapatılıyor..." << endl;
+            admin = -1;
             break;
         case 7:
             cout << "Çıkış Yapılıyor..." << endl;
+            menu = false;
             break;
         default:
-            cout << "Hatalı Giriş " << endl;
+            cout << "Hatalı Seçim! " << endl;
             mainMenu();
             break;
         }
@@ -626,7 +714,8 @@ void mainMenu(){
 }
 
 int main(){
-    while (true)
+    
+    while (menu)
     {
         mainMenu();
     }
