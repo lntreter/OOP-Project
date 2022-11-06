@@ -404,44 +404,89 @@ void userLogin();
 User *userList[100];
 
 void User::signUp(){
-    fstream wFile("users.txt", ios::app);
+    fstream dosya("users.txt", ios::app);
 
     string name, nickname, telNo, mail, adress, pass, saleCoupon, bDate;
 
     cout << "Kayıt olmak için bilgilerinizi giriniz." << endl;
     cout << endl;
     cout << "Adınız: "; getline(cin >> ws, name);
-    cout << "Kullanıcı adınız: "; cin >> nickname; cout << endl;
-    cout << "Şifreniz: "; cin >> pass; cout << endl;
-    cout << "Telefon Numaranız: "; cin >> telNo; cout << endl;
-    cout << "Mail Adredsiniz: "; cin >> mail; cout << endl;
-    cout << "Adresiniz: "; cin >> adress; cout << endl;
-    cout << "Doğum Tarihiniz (Gün.Ay.Yıl): "; cin >> bDate; cout << endl;
+    cout << "Kullanıcı adınız: "; getline(cin >> ws, nickname);
+    cout << "Şifreniz: "; getline(cin >> ws, pass);
+    cout << "Telefon Numaranız: "; getline(cin >> ws, telNo);
+    cout << "Mail Adredsiniz: "; getline(cin >> ws, mail);
+    cout << "Adresiniz: "; getline(cin >> ws, adress);
+    cout << "Doğum Tarihiniz (Gün.Ay.Yıl): "; getline(cin >> ws, bDate);
+    cout << endl;
 
     try{
         userList[userCount] = new User(name, telNo, nickname, mail, adress, pass, saleCoupon, bDate);
         cout << "Kayıt Başarılı! ---> Lütfen Giriş Yapınız! " << endl;
+        cout << endl;
     }
     catch(exception &e){
         cout << "Kayıt başarısız! "<< endl;
         mainMenu();
     }
 
-    if (wFile.is_open()){
-        wFile << nickname << endl;
-        wFile.close();
+    if (dosya.is_open()){
+        dosya << nickname + pass << endl;
+        dosya.close();
     }
     else{
         cout << "Dosya açılamadı!" << endl;
     }
 }
 
+void adminLogin(){
+    cout << "Lütfen Admin Şifresini Giriniz: " << endl;
+    cout << endl;
+
+    string pass;
+
+    cout << "Admin Şifre: "; getline(cin >> ws, pass);
+    cout << endl;
+
+    if (pass == "admin")
+        cout << "Şifre Doğru! Admin Olarak Giriş Yapılıyor..."<< endl;
+        cout << endl;
+        admin = 1;
+        mainMenu();
+
+}
+
 void userLogin(){
     cout << "Lütfen Giriş Yapınız! " << endl;
     cout << endl;
-    string nickname, pass;
-    cout << "Kullanıcı Adınız: " ; cin >> nickname; 
-    
+    string nickname, pass, passCheck, line, candidate;
+    cout << "Kullanıcı Adınız: " ; getline(cin >> ws, nickname);
+    cout << "Şifrenizi Giriniz: "; getline(cin >> ws, pass);
+    cout << endl;
+
+    passCheck = (nickname+pass);
+
+    fstream dosya("users.txt", ios::in);
+
+    bool tf = false;
+
+    while(!dosya.eof()){
+        getline(dosya, line);
+        if (passCheck == line){
+            cout << "Bilgiler Doğru! Giriş Yapılıyor... " << endl;
+            cout << endl;
+            admin = 0;
+            tf = true;
+        }
+        else if(!tf){
+            cout << "Bilgileriniz Yanlış! Lütfen Tekrar Deneyiniz. " << endl;
+            cout << endl;
+            userLogin();
+        }
+    }
+
+    if (tf) {
+        mainMenu();
+    }
 }
 
 void SystemLogin(){
@@ -454,9 +499,11 @@ void SystemLogin(){
     switch (c){
         case 1:
             cout << "---Yönetici Girişi---" << endl;
+            adminLogin();
             break;
         case 2:
             cout << "---Müşteri Girişi---" << endl;
+            userLogin();
             break;
         case 3:
             cout << endl;
@@ -579,6 +626,10 @@ void mainMenu(){
 }
 
 int main(){
-    mainMenu();
+    while (true)
+    {
+        mainMenu();
+    }
+    
     return 0;
 }
