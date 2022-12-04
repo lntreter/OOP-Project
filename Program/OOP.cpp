@@ -103,6 +103,7 @@ class Clothes{
     static void addClothe(Clothes*,Clothes*);
     static void delClothe(Clothes,Clothes*);
     static void listClothes(Clothes*);
+    static void orderClotes(Clothes*);
     void Edit();
     void print(){
         cout << "Category: " << category << endl;
@@ -118,10 +119,19 @@ int Clothes::clotheCount = 0;
 int Clothes::listSize = 500;
 Clothes clothesList[500];
 
+void Clothes::orderClotes(Clothes* list){
+    for (int i = 1; i <= clotheCount; i++)
+    {
+        list[i].print();
+        cout << "Satin almak icin " << i << " tusuna basiniz." << endl<<endl;
+    }
+    
+}
+
 void Clothes::listClothes(Clothes* list){
     for(int i = 1; i <= clotheCount; i++){
-            list[i].print();
-        }
+        list[i].print();
+    }
 }
 
 void Clothes::addClothe(Clothes *c,Clothes* list){
@@ -228,6 +238,7 @@ class order : Clothes{
     static int orderCount;
     static int listSize;
     public:
+    order(){};
     order(int o, double p, Time t, Time d, string c, string n, double pr, string s, string col) : Clothes(c, n, pr, s, col){
         orderNo = o;
         orderPrice = p;
@@ -273,11 +284,10 @@ class order : Clothes{
     }
     void print(){
         cout << "Order No: " << orderNo << endl;
-        cout << "Order Price: " << orderPrice << endl;
+        cout << "Order Price: " << orderPrice<<"TL" << endl;
         cout << "Order Time: " << orderTime << endl;
         cout << "Delivery Time: " << deliveryTime << endl;
         Clothes::print();
-        cout << "-----------------------" << endl;
     }
     int orderDeliveryTime(){
         return deliveryTime.getHour() - orderTime.getHour();
@@ -291,9 +301,9 @@ class order : Clothes{
         }
     }
     static void delOrder(order o, order *list){
-        for(int i = 0; i < orderCount; i++){
+        for(int i = 1; i <= orderCount; i++){
             if(list[i].getOrderNo() == o.getOrderNo()){
-                for(int j = i; j < orderCount; j++){
+                for(int j = i; j <= orderCount; j++){
                     list[j] = list[j+1];
                 }
                 orderCount--;
@@ -310,7 +320,7 @@ class order : Clothes{
         }
     }
     static void printList(order *list){
-        for(int i = 0; i < orderCount; i++){
+        for(int i = 1; i <= orderCount; i++){
             list[i].print();
         }
         cout << endl;
@@ -319,6 +329,7 @@ class order : Clothes{
 
 int order::orderCount = 0;
 int order::listSize = 100;
+order orderList[100];
 
 class User : Person {
     private:
@@ -524,6 +535,46 @@ User *userList[100];
 //     }
 // }
 
+int orderNo = 0;
+
+void giveOrder(){
+    Time orderTime;
+    Time deliveryTime;
+    int opt;
+
+    Clothes::orderClotes(clothesList);
+    cout << "Geri dönmek için 0 tuşuna basın. "<<endl;
+    try
+    {
+        if(!(cin >> opt)){
+            throw 606;
+        } 
+    }
+    catch(int hata)
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cerr << "Hatalı bir giriş yaptınız lütfen tekrar deneyin ! Hata kodu: " << hata << endl;
+        cout << endl;
+        cout << "Geri dönmek için 0 tuşuna basın. "<<endl;
+        cin >> opt;
+    }
+    for (int i = 1; i <= Clothes::getClotheCount(); i++)
+    {
+        if (opt == i)
+        {
+            order::addOrder(new order(++orderNo, clothesList[i].getPrice(), orderTime, deliveryTime,
+                clothesList[i].getCategory(), clothesList[i].getName(),
+                    clothesList[i].getPrice(), clothesList[i].getSize(), clothesList[i].getColor()), orderList);
+            cout << "Siparişiniz başarıyla alındı! "<< endl<<endl;
+            break;
+        }else if(opt == 0){
+            break;
+            mainMenu();
+        }
+    }    
+}
+
 void products(){
     string category;
     string name;
@@ -599,7 +650,7 @@ void products(){
         }
         break;
     case 3:
-        cout << "Ürün Listeleme Ekranı" << endl<<endl;
+        cout << "---Ürün Listeleme Ekranı---" << endl<<endl;
         Clothes::listClothes(clothesList);
         cout << "Devam etmek için bir tuşa basın. "<< endl;
         getch();
@@ -614,7 +665,6 @@ void products(){
         products();
         break;
     }
-    products();
 }
 
 void User::signUp(){
@@ -757,10 +807,18 @@ void SystemLogin(){
 }
 
 
+
+
+
+
+
+
+
 void mainMenu(){
 
     int choice;
     bool r = true;
+    int opt;
 
     switch (admin)
     {
@@ -839,10 +897,16 @@ void mainMenu(){
         switch (choice)
         {
             case 1:
-                cout << "---Sipariş Ver---" << endl;
+                cout << "---Sipariş Ver---" << endl<<endl;
+                giveOrder();
+                cout << endl;
                 break;
             case 2:
-                cout << "---Siparişleri Görüntüle---" << endl;
+                cout << "---Siparişleri Görüntüle---" << endl<<endl;
+                order::printList(orderList);
+                cout << "Devam etmek için bir tuşa basın... "<<endl;
+                getch();
+                cout << endl;
                 break;
             case 3:
                 cout << "---Şikayet - Öneri (Geri Bildirimler)---" << endl;
@@ -924,17 +988,14 @@ void mainMenu(){
         cout << endl;
         mainMenu();
         break;
-    }
-    
+    }   
 }
 
 int main(){
     setlocale(LC_ALL, "Turkish");
     
-    while (menu)
-    {
-        mainMenu();
-    }
-    
+    while (menu) {mainMenu();}
+
+
     return 0;
 }
