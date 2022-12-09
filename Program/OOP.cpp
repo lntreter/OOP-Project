@@ -64,9 +64,6 @@ class Clothes{
         color = col;
         clotheCount++;
     }
-    ~Clothes(){
-        clotheCount--;
-    }	
     void setCategory(string c){
         category = c;
     }
@@ -100,9 +97,9 @@ class Clothes{
     static int getClotheCount(){
         return clotheCount;
     }
-    static void addClothe(Clothes*,Clothes*);
-    static void delClothe(Clothes,Clothes*);
-    static void listClothes(Clothes*);
+    static void addClothe(Clothes*,Clothes[]);
+    static void delClothe(Clothes,Clothes[]);
+    static void listClothes(Clothes[]);
     static void orderClotes(Clothes*);
     void Edit();
     void print(){
@@ -128,13 +125,13 @@ void Clothes::orderClotes(Clothes* list){
     
 }
 
-void Clothes::listClothes(Clothes* list){
+void Clothes::listClothes(Clothes list[]){
     for(int i = 1; i <= clotheCount; i++){
         list[i].print();
     }
 }
 
-void Clothes::addClothe(Clothes *c,Clothes* list){
+void Clothes::addClothe(Clothes *c,Clothes list[]){
     if(clotheCount < listSize){
         list[clotheCount] = *c;
     }
@@ -142,17 +139,21 @@ void Clothes::addClothe(Clothes *c,Clothes* list){
         cout << "Stok Dolu!"<< endl;
     }
 }
-void Clothes::delClothe(Clothes c,Clothes* list){
-    for(int i = 0; i < clotheCount; i++){
+void Clothes::delClothe(Clothes c,Clothes list[]){
+    Clothes *tmp = new Clothes[clotheCount];
+    for(int i = 1; i <= clotheCount; i++){
         if(list[i].getName() == c.getName()){
-            for(int j = i; j < clotheCount; j++){
-                list[j] = list[j+1];
+            list[clotheCount+1]=list[i];
+            for (int k = i; k < clotheCount; k++)
+            {
+                list[i] = list[i+1];
             }
-            delete[] &list[i];
             clotheCount--;
-            break;
         }
+        if(!(i > clotheCount))
+            tmp[i] = list[i];
     }
+    list = tmp;
 }
 
 class Person{
@@ -292,9 +293,12 @@ class order : Clothes{
     int orderDeliveryTime(){
         return deliveryTime.getHour() - orderTime.getHour();
     }
-    static void addOrder(order *o, order *list){
+    static void addOrder(order *o, order list[]){
         if(orderCount < listSize){
             list[orderCount] = *o;
+            clothesList[4].print();
+            clotheCount--;
+            delClothe(*o,clothesList);
         }
         else{
             cout << "Sepet Dolu!" << endl;
@@ -582,6 +586,7 @@ void products(){
     string size;
     string color;
     string named;
+    int i =1;
 
     int sec;
 
@@ -628,25 +633,23 @@ void products(){
     case 2:
         cout << "---Ürün Silme Ekranı---" << endl<<endl;
         cout << "Silmek istediğiniz ürünün adını giriniz: " << endl;
-        try{
-            getline(cin >> ws,named);
-            for (int i = 1; i <= Clothes::getClotheCount(); i++)
+                    getline(cin>>ws,named);
+        do{
+            if (named == clothesList[i].getName())
             {
-                if (named == clothesList[i].getName())
-                {
-                    Clothes::delClothe(clothesList[i], clothesList);
-                    cout << "Ürün başarıyla silindi." << endl;
-                    break;
-                }
-                else{
-                    throw 707;
-                    break;
-                }
+                Clothes::delClothe(clothesList[i], clothesList);
+                cout << "Ürün başarıyla silindi." << endl;
+                i=1;
+                break;
             }
-        }
-        catch(int err){
-            cout << "Bu isimde bir ürün bulunamadı. Hata kodu: " << err << endl<<endl;
-            products();
+            i++;
+            
+        }while(i <= Clothes::getClotheCount());
+
+        if(i> Clothes::getClotheCount() && i != 1)
+        {
+            cout<<"Ürün Bulunamadı"<<endl;
+            i=1;
         }
         break;
     case 3:
@@ -993,9 +996,9 @@ void mainMenu(){
 
 int main(){
     setlocale(LC_ALL, "Turkish");
-    
-    while (menu) {mainMenu();}
-
-
+    while (menu) 
+    {
+        mainMenu();
+    }
     return 0;
 }
