@@ -56,7 +56,7 @@ class Clothes{
     static int listSize;
     public:
     Clothes(){}
-    Clothes(string c, string n, double p, string s, string col){
+    Clothes(string c, string n, double p, string s, string col){//Kurucu fonksiyon
         category = c;
         name = n;
         price = p;
@@ -114,46 +114,51 @@ class Clothes{
 
 int Clothes::clotheCount = 0;
 int Clothes::listSize = 500;
-Clothes clothesList[500];
+Clothes clothesList[500];//Kıyafetlerin tutulduğu liste
 
-void Clothes::orderClotes(Clothes* list){
+void Clothes::orderClotes(Clothes* list){//Sipariş verme fonksiyonu
     for (int i = 1; i <= clotheCount; i++)
     {
-        list[i].print();
+        list[i].print();//Kıyafetleri listeler
         cout << "Satin almak icin " << i << " tusuna basiniz." << endl<<endl;
     }
     
 }
 
-void Clothes::listClothes(Clothes list[]){
+void Clothes::listClothes(Clothes list[]){//Kıyafetleri listeler
     for(int i = 1; i <= clotheCount; i++){
         list[i].print();
     }
 }
 
-void Clothes::addClothe(Clothes *c,Clothes list[]){
-    if(clotheCount < listSize){
-        list[clotheCount] = *c;
+void Clothes::addClothe(Clothes *c,Clothes list[]){//Kıyafet ekler
+    if(clotheCount < listSize){//Stok dolu değilse
+        list[clotheCount] = *c;//Kıyafetleri listeye ekler
     }
     else{
-        cout << "Stok Dolu!"<< endl;
+        cout << "Stok Dolu!"<< endl;//Stok doluysa
     }
 }
-void Clothes::delClothe(Clothes c,Clothes list[]){
-    Clothes *tmp = new Clothes[clotheCount];
-    for(int i = 1; i <= clotheCount; i++){
-        if(list[i].getName() == c.getName()){
-            list[clotheCount+1]=list[i];
-            for (int k = i; k < clotheCount; k++)
+void Clothes::delClothe(Clothes c,Clothes list[]){//Kıyafet siler
+    Clothes *tmp = new Clothes[clotheCount];//Geçici bir liste oluşturur
+
+    for(int i = 1; i <= clotheCount; i++){//Kıyafetleri gezer
+        
+        if(list[i].getName() == c.getName()){//Eğer silinecek kıyafet bulunursa
+            
+            list[clotheCount+1]=list[i];//Son kıyafet silinecek kıyafetin yerine konur
+            
+            for (int k = i; k < clotheCount; k++)//Silinen kıyafetin yerine gelen kıyafetlerin yerini değiştirir
             {
-                list[i] = list[i+1];
+                list[i] = list[i+1];//Kıyafetlerin yerini değiştirir
             }
             clotheCount--;
         }
-        if(!(i > clotheCount))
-            tmp[i] = list[i];
+        if(!(i > clotheCount))//Eğer silinen kıyafet yoksa
+            
+            tmp[i] = list[i];//Geçici listeye kıyafetleri ekler
     }
-    list = tmp;
+    list = tmp;//Geçici listeyi ana listeye atar
 }
 
 class Person{
@@ -200,15 +205,15 @@ class Person{
         cout << "Name: " << name << endl;
         cout << "Tel No: " << telNo << endl;
     }
-    static void addPerson(Person *p, Person *list){
-        if(personCount < listSize){
-            list[personCount] = *p;
+    static void addPerson(Person *p, Person *list){//Person ekleme fonksiyonu
+        if(personCount < listSize){//Liste dolu değilse
+            list[personCount] = *p;//Personu listeye ekler
         }
         else{
             cout << "List is full!" << endl;
         }
     }
-    static void del(Person p, Person *list){
+    static void del(Person p, Person *list){//düzenlenicek
         for(int i = 0; i < personCount; i++){
             if(list[i].getName() == p.getName()){
                 for(int j = i; j < personCount; j++){
@@ -219,7 +224,7 @@ class Person{
             }
         }
     }
-    static void printList(Person *list){
+    static void printList(Person *list){//Personları listeler
         for(int i = 0; i < personCount; i++){
             list[i].print();
         }
@@ -293,24 +298,24 @@ class order : Clothes{
     int orderDeliveryTime(){
         return deliveryTime.getHour() - orderTime.getHour();
     }
-    static void addOrder(order *o, order list[]){
-        if(orderCount < listSize){
-            list[orderCount] = *o;
-            clothesList[4].print();
-            clotheCount--;
-            delClothe(*o,clothesList);
+    static void addOrder(order *o, order list[]){//Sipariş ekleme fonksiyonu
+        
+        if(orderCount < listSize){//Liste dolu değilse
+            list[orderCount] = *o;//Siparişi listeye ekler
+            clotheCount--;//Kıyafet sayısını azaltır
+            delClothe(*o,clothesList);//Kıyafeti siler
         }
         else{
             cout << "Sepet Dolu!" << endl;
         }
     }
-    static void delOrder(order o, order *list){
-        for(int i = 1; i <= orderCount; i++){
-            if(list[i].getOrderNo() == o.getOrderNo()){
-                for(int j = i; j <= orderCount; j++){
-                    list[j] = list[j+1];
+    static void delOrder(order o, order *list){//Sipariş silme fonksiyonu
+        for(int i = 1; i <= orderCount; i++){//Sipariş sayısı kadar döner
+            if(list[i].getOrderNo() == o.getOrderNo()){//Sipariş numarası eşitse
+                for(int j = i; j <= orderCount; j++){//Sipariş sayısı kadar döner
+                    list[j] = list[j+1];//Siparişi siler
                 }
-                orderCount--;
+                orderCount--;//Sipariş sayısını azaltır
                 break;
             }
         }
@@ -333,7 +338,7 @@ class order : Clothes{
 
 int order::orderCount = 0;
 int order::listSize = 100;
-order orderList[100];
+order orderList[100];//Sipariş listesi
 
 class User : Person {
     private:
@@ -458,14 +463,14 @@ class Courier : Person {
     }
 };
 
-int admin = -1;
-bool menu = true;
+int admin = -1;//Admin girişi kontrolü
+bool menu = true;//Menü kontrolü
 
 void mainMenu();
 void SystemLogin();
 void userLogin();
 void orders();
-User *userList[100];
+User *userList[100];//Kullanıcı listesi
 
 
 // void orders(){
@@ -539,40 +544,40 @@ User *userList[100];
 //     }
 // }
 
-int orderNo = 0;
+int orderNo = 0;//Sipariş numarası
 
-void giveOrder(){
-    Time orderTime;
-    Time deliveryTime;
-    int opt;
+void giveOrder(){//Sipariş verme
+    Time orderTime;//Sipariş zamanı
+    Time deliveryTime;//Teslimat zamanı
+    int opt;//Seçenek
 
-    Clothes::orderClotes(clothesList);
+    Clothes::orderClotes(clothesList);//Kıyafetleri listeleme
     cout << "Geri dönmek için 0 tuşuna basın. "<<endl;
-    try
+    try                  //Hata yakalama
     {
-        if(!(cin >> opt)){
+        if(!(cin >> opt)){   //Hata kontrolü
             throw 606;
         } 
     }
     catch(int hata)
     {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cerr << "Hatalı bir giriş yaptınız lütfen tekrar deneyin ! Hata kodu: " << hata << endl;
-        cout << endl;
-        cout << "Geri dönmek için 0 tuşuna basın. "<<endl;
+        cin.clear();  //Hata durumunda cin'i temizle
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); //Hata durumunda cin'i temizle
+        cerr << "Hatalı bir giriş yaptınız lütfen tekrar deneyin ! Hata kodu: " << hata << endl; //Hata mesajı
+        cout << endl; //Boşluk
+        cout << "Geri dönmek için 0 tuşuna basın. "<<endl; //Kullanıcıya bilgi ver
         cin >> opt;
     }
-    for (int i = 1; i <= Clothes::getClotheCount(); i++)
+    for (int i = 1; i <= Clothes::getClotheCount(); i++) //Kıyafet sayısı kadar döngü
     {
         if (opt == i)
         {
-            order::addOrder(new order(++orderNo, clothesList[i].getPrice(), orderTime, deliveryTime,
+            order::addOrder(new order(++orderNo, clothesList[i].getPrice(), orderTime, deliveryTime, //Sipariş ekleme
                 clothesList[i].getCategory(), clothesList[i].getName(),
                     clothesList[i].getPrice(), clothesList[i].getSize(), clothesList[i].getColor()), orderList);
             cout << "Siparişiniz başarıyla alındı! "<< endl<<endl;
             break;
-        }else if(opt == 0){
+        }else if(opt == 0){//Geri dönmek için 0 tuşuna basın.
             break;
             mainMenu();
         }
@@ -601,7 +606,7 @@ void products(){
         }
     }
     catch(int hata){
-        cin.clear();
+        cin.clear(); 
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cerr << "Hatalı bir giriş yaptınız lütfen tekrar deneyin ! Hata kodu: " << hata << endl;
         cout << endl;
@@ -635,28 +640,30 @@ void products(){
         cout << "Silmek istediğiniz ürünün adını giriniz: " << endl;
                     getline(cin>>ws,named);
         do{
-            if (named == clothesList[i].getName())
+            if (named == clothesList[i].getName()) //Kıyafet adı girilen kıyafet adı ile aynı ise
             {
-                Clothes::delClothe(clothesList[i], clothesList);
+                Clothes::delClothe(clothesList[i], clothesList); //Kıyafet sil
                 cout << "Ürün başarıyla silindi." << endl;
                 i=1;
                 break;
             }
             i++;
             
-        }while(i <= Clothes::getClotheCount());
+        }while(i <= Clothes::getClotheCount());  //Kıyafet sayısı kadar döngü
 
-        if(i> Clothes::getClotheCount() && i != 1)
+        if(i> Clothes::getClotheCount() && i != 1) //Kıyafet sayısı kadar döngü döndüyse ve ürün bulunamadıysa
         {
-            cout<<"Ürün Bulunamadı"<<endl;
+            cout<<"Ürün Bulunamadı"<<endl; //Ürün bulunamadı mesajı
             i=1;
         }
         break;
     case 3:
         cout << "---Ürün Listeleme Ekranı---" << endl<<endl;
-        Clothes::listClothes(clothesList);
-        cout << "Devam etmek için bir tuşa basın. "<< endl;
-        getch();
+        Clothes::listClothes(clothesList); //Kıyafetleri listele
+
+        cout << "Devam etmek için bir tuşa basın. "<< endl; //Kullanıcıya bilgi ver
+        
+        getch(); //Kullanıcıdan bir tuşa basmasını bekler
         cout << endl;
         break;
     case 4:
@@ -675,6 +682,8 @@ void User::signUp(){
 
     string name, nickname, telNo, mail, adress, pass, saleCoupon, bDate;
 
+    //Kullanıcıdan bilgileri al
+
     cout << "Kayıt olmak için bilgilerinizi giriniz." << endl;
     cout << endl;
     cout << "Adınız: "; getline(cin >> ws, name);
@@ -686,19 +695,23 @@ void User::signUp(){
     cout << "Doğum Tarihiniz (Gün.Ay.Yıl): "; getline(cin >> ws, bDate);
     cout << endl;
 
+    //Kullanıcıyı oluştur
+
     try{
         userList[userCount] = new User(name, telNo, nickname, mail, adress, pass, saleCoupon, bDate);
         cout << "Kayıt Başarılı! ---> Lütfen Giriş Yapınız! " << endl;
         cout << endl;
-    }
+
+    }  //Hata yakalarsa
+
     catch(exception &e){
         cout << "Kayıt başarısız! "<< endl;
         mainMenu();
     }
 
-    if (dosya.is_open()){
-        dosya << nickname + pass << endl;
-        dosya.close();
+    if (dosya.is_open()){ //Dosya açıldıysa
+        dosya << nickname + pass << endl;   //Kullanıcı adı ve şifreyi dosyaya yaz
+        dosya.close(); //Dosyayı kapat
     }
     else{
         cout << "Dosya açılamadı!" << endl;
@@ -708,6 +721,8 @@ void User::signUp(){
 void adminLogin(){
     cout << "Lütfen Admin Şifresini Giriniz: " << endl;
     cout << endl;
+
+    //Admin şifresini al
 
     string pass;
 
@@ -728,6 +743,9 @@ void adminLogin(){
 }
 
 void userLogin(){
+
+    //Kullanıcı adı ve şifreyi al
+
     cout << "Lütfen Giriş Yapınız! " << endl;
     cout << endl;
     string nickname, pass, passCheck, line, candidate;
@@ -737,14 +755,19 @@ void userLogin(){
 
     passCheck = (nickname+pass);
 
-    fstream dosya("users.txt", ios::in);
+    fstream dosya("users.txt", ios::in); //Kullanıcı bilgilerini oku
 
-    bool tf = false;
+    bool tf = false; //Kullanıcı bilgileri doğruysa true
 
-    if(dosya.is_open()){
-        while(!dosya.eof()){
-            getline(dosya, line);
-            int offset;
+    if(dosya.is_open()){ //Dosya açıldıysa
+
+        while(!dosya.eof()){ //Dosya sonuna gelene kadar
+
+            getline(dosya, line); //Dosyadan satır satır oku
+
+            int offset; //Satırda aranan kelimenin bulunduğu konumu tutar
+
+            //Satırda aranan kelime varsa
             if ((offset = line.find(passCheck, 0)) != string::npos){
                 cout << "Bilgiler Doğru! Giriş Yapılıyor... " << endl;
                 cout << endl;
@@ -754,29 +777,35 @@ void userLogin(){
         }
     }
 
+    //Kullanıcı bilgileri yanlışsa
     if(!tf){
         cout << "Bilgileriniz Yanlış! Lütfen Tekrar Deneyiniz. " << endl;
         cout << endl;
         userLogin();
     }
 
+    //Kullanıcı bilgileri doğruysa
     if (tf) {
         mainMenu();
     }
 }
 
 void SystemLogin(){
+    
+    //Sistem giriş menüsü
     int c;
     cout << "1. Yönetici Girişi " << endl;
     cout << "2. Müşteri Girişi " << endl;
     cout << "3. Ana Menüye Geri Dön " << endl;
     
+    //Hata yakalama
     try
     {
         if(!(cin >> c)){
         throw 505;
         } 
     }
+    //Hata yakalandıysa
     catch(int hata)
     {
         cin.clear();
@@ -789,6 +818,7 @@ void SystemLogin(){
         cin >> c;
     }
 
+    //Seçim yap
     switch (c){
         case 1:
             cout << "---Yönetici Girişi---" << endl;
@@ -809,27 +839,21 @@ void SystemLogin(){
     }
 }
 
-
-
-
-
-
-
-
-
 void mainMenu(){
 
-    int choice;
-    bool r = true;
-    int opt;
+    //Ana menü
+    int choice; //Seçim yapmak için
+    bool r = true; //Döngüyü kontrol eder
+    int opt; //Seçim yapmak için
 
-    switch (admin)
+    switch (admin) //Admin değilse
     {
     case -1:
         cout << "1. Sisteme Giriş" << endl;
         cout << "2. Üye Kaydı" << endl;
         cout << "3. Çıkış" << endl;
 
+        //Hata yakalama
         try
         {
             if(!(cin >> choice)){
@@ -858,18 +882,20 @@ void mainMenu(){
             case 2:
                 cout << "---Üye Kaydı---" << endl;
                 cout << endl;
-                User::signUp();
+                User::signUp(); //Üye kaydı
                 mainMenu();
                 break;
             case 3:
                 cout << "Çıkış yapılıyor..." << endl;
-                menu = false;
+                menu = false; //Ana menüden çık
                 break;
             default:
                 cout << "Hatalı seçim!" << endl;
                 break;
         }
         break;
+
+    //Admin ise
     case 0:
         cout << "1. Sipariş Ver " << endl;
         cout << "2. Siparişleri Görüntüle " << endl;
@@ -877,6 +903,7 @@ void mainMenu(){
         cout << "4. Oturumu Kapat " << endl;
         cout << "5. Çıkış " << endl;
         
+        //Hata yakalama
         try
         {
             if(!(cin >> choice)){
@@ -901,14 +928,16 @@ void mainMenu(){
         {
             case 1:
                 cout << "---Sipariş Ver---" << endl<<endl;
-                giveOrder();
+                giveOrder(); //Sipariş ver
                 cout << endl;
                 break;
             case 2:
                 cout << "---Siparişleri Görüntüle---" << endl<<endl;
-                order::printList(orderList);
+
+                order::printList(orderList); //Siparişleri görüntüle
+
                 cout << "Devam etmek için bir tuşa basın... "<<endl;
-                getch();
+                getch(); //Devam etmek için bir tuşa bas
                 cout << endl;
                 break;
             case 3:
@@ -928,6 +957,8 @@ void mainMenu(){
                 break;
         }
         break;
+
+    //Müşteri ise
     case 1:
         cout << "1. Ürünleri Görüntüle / Düzenle " << endl;
         cout << "2. Kuryeleri Düzenle " << endl;
@@ -936,6 +967,7 @@ void mainMenu(){
         cout << "5. Oturumu Kapat " << endl;
         cout << "6. Çıkış " << endl;
         
+        //Hata yakalama
         try
         {
             if(!(cin >> choice)){
@@ -962,7 +994,7 @@ void mainMenu(){
         case 1:
             cout << "---Ürünler---" << endl;
             cout << endl;
-            products();
+            products(); //Ürünleri görüntüle
             cout << endl;
             break;
         case 2:
@@ -976,11 +1008,11 @@ void mainMenu(){
             break;
         case 5:
             cout << "Oturum Kapatılıyor..." << endl;
-            admin = -1;
+            admin = -1; //Oturumu kapat
             break;
         case 6:
             cout << "Çıkış Yapılıyor..." << endl;
-            menu = false;
+            menu = false; //Ana menüden çık
             break;
         default:
             cout << "Hatalı Seçim! " << endl;
