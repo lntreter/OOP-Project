@@ -978,17 +978,17 @@ void run(){
     }
 }
 
-int a = SAAT.getHour(), b = SAAT.getMinute();
+double a = SAAT.getHour(), b = SAAT.getMinute();
 
 void Time::setTimer(Time SAAT)
 { //Saat ve dakika değerlerini ayarla
-    while (true)
+    while (menu)
     {
         b += 0.1;
         if (b >= 60)
         {
             a += b / 60;
-            b = b % 60;
+            b = (int(b) % 60);
         }
         if (a >= 24)
         {
