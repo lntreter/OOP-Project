@@ -37,9 +37,7 @@ class Time{ //Zaman Sınıfı
         cout << hour << ":" << minute << endl;
     }
     static void setTimer(Time SAAT){ //Saat ve dakika değerlerini ayarlar
-        int a = rand() % 23 + 0,b =rand() % 59 + 0;;
-        SAAT.setHour(a);
-        SAAT.setMinute(b);
+        int a = SAAT.getHour(), b = SAAT.getMinute();
 
         while (true)
         {
@@ -49,12 +47,12 @@ class Time{ //Zaman Sınıfı
                 a += b / 60;
                 b = b % 60;
             }
+            if (a >= 24)
+            {
+                a = 0;
+            }
             SAAT.setHour(a);
             SAAT.setMinute(b);
-            if (SAAT.getMinute()==0)
-            {
-                cout <<endl<< "Saat: " << SAAT << endl<<endl;
-            }
         }
     }
     void delay(int d){ //Saat ve dakika değerlerini gecikme değeri kadar arttırır
@@ -506,82 +504,12 @@ void userLogin();
 void orders();
 User *userList[100];//Kullanıcı listesi
 
-
-// void orders(){
-//     int orderNo;
-//     double orderPrice;
-//     Time orderTime;
-//     Time deliveryTime;
-//     Clothes *c = new Clothes();
-//     order *o = new order();
-//     order *orderList[100];
-//     int choice;
-//     while(menu){
-//         cout << "1. Add Order" << endl;
-//         cout << "2. Delete Order" << endl;
-//         cout << "3. Update Order" << endl;
-//         cout << "4. Print Order List" << endl;
-//         cout << "5. Exit" << endl;
-//         cout << "Choice: ";
-//         cin >> choice;
-//         switch(choice){
-//             case 1:
-//                 cout << "Order No: ";
-//                 cin >> orderNo;
-//                 o->setOrderNo(orderNo);
-//                 cout << "Order Price: ";
-//                 cin >> orderPrice;
-//                 o->setOrderPrice(orderPrice);
-//                 cout << "Order Time: ";
-//                 cin >> orderTime;
-//                 o->setOrderTime(orderTime);
-//                 cout << "Delivery Time: ";
-//                 cin >> deliveryTime;
-//                 o->setDeliveryTime(deliveryTime);
-//                 c->input();
-//                 o->setClothes(c);
-//                 order::addOrder(o, orderList);
-//                 break;
-//             case 2:
-//                 cout << "Order No: ";
-//                 cin >> orderNo;
-//                 o->setOrderNo(orderNo);
-//                 order::delOrder(*o, orderList);
-//                 break;
-//             case 3:
-//                 cout << "Order No: ";
-//                 cin >> orderNo;
-//                 o->setOrderNo(orderNo);
-//                 cout << "Order Price: ";
-//                 cin >> orderPrice;
-//                 o->setOrderPrice(orderPrice);
-//                 cout << "Order Time: ";
-//                 cin >> orderTime;
-//                 o->setOrderTime(orderTime);
-//                 cout << "Delivery Time: ";
-//                 cin >> deliveryTime;
-//                 o->setDeliveryTime(deliveryTime);
-//                 c->input();
-//                 o->setClothes(c);
-//                 order::updateOrder(*o, orderList);
-//                 break;
-//             case 4:
-//                 order::printList(orderList);
-//                 break;
-//             case 5:
-//                 menu = false;
-//                 break;
-//             default:
-//                 cout << "Wrong choice!" << endl;
-//                 break;
-//         }
-//     }
-// }
-
 int orderNo = 0;//Sipariş numarası
 
+Time SAAT;
+
 void giveOrder(){//Sipariş verme
-    Time orderTime;//Sipariş zamanı
+    Time orderTime = SAAT;//Sipariş zamanı
     Time deliveryTime(0,0);//Teslimat zamanı
     int opt;//Seçenek
 
@@ -1060,13 +988,21 @@ void mainMenu(){
     }   
 }
 
-int main(){
-    setlocale(LC_ALL, "Turkish");
-    
-    while (menu) 
+void run(){
+    while (menu)
     {
         mainMenu();
     }
+}
+
+int main(){
+    setlocale(LC_ALL, "Turkish");
+
+    thread t1(Time::setTimer, SAAT);
+    thread t2(run);
+    t1.join();
+    t2.join();
+    
     return 0;
 }
 
