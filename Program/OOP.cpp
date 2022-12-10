@@ -36,25 +36,8 @@ class Time{ //Zaman Sınıfı
     void print(){ //Saat ve dakika değerlerini ekrana yazdırır
         cout << hour << ":" << minute << endl;
     }
-    static void setTimer(Time SAAT){ //Saat ve dakika değerlerini ayarlar
-        int a = SAAT.getHour(), b = SAAT.getMinute();
+    static void setTimer(Time);
 
-        while (true)
-        {
-            b += 0.1;
-            if (b >= 60)
-            {
-                a += b / 60;
-                b = b % 60;
-            }
-            if (a >= 24)
-            {
-                a = 0;
-            }
-            SAAT.setHour(a);
-            SAAT.setMinute(b);
-        }
-    }
     void delay(int d){ //Saat ve dakika değerlerini gecikme değeri kadar arttırır
         minute += d;
         if(minute >= 60){
@@ -992,6 +975,27 @@ void run(){
     while (menu)
     {
         mainMenu();
+    }
+}
+
+int a = SAAT.getHour(), b = SAAT.getMinute();
+
+void Time::setTimer(Time SAAT)
+{ //Saat ve dakika değerlerini ayarla
+    while (true)
+    {
+        b += 0.1;
+        if (b >= 60)
+        {
+            a += b / 60;
+            b = b % 60;
+        }
+        if (a >= 24)
+        {
+            a = 0;
+        }
+        SAAT.setHour(a);
+        SAAT.setMinute(b);
     }
 }
 
