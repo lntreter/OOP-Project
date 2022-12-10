@@ -12,6 +12,10 @@ using namespace std;
 
 mutex mu;
 
+int fark;
+
+int orderNo = 0;//Sipariş numarası
+
 
 class Time{ //Zaman Sınıfı
     private:
@@ -23,6 +27,17 @@ class Time{ //Zaman Sınıfı
         minute = rand() % 59 + 0;
     }
     Time(int h, int m){//Kurucu fonksiyon
+
+        if (m >= 60)
+        {
+            h += m / 60;
+            m = (int(m) % 60);
+        }
+        if (h >= 24)
+        {
+            h = 0;
+        }
+
         hour = h;
         minute = m;
     }
@@ -49,6 +64,18 @@ class Time{ //Zaman Sınıfı
             hour += minute / 60;
             minute = minute % 60;
         }
+    }
+
+    bool operator>(const Time& t){//Saat ve dakika değerlerini karşılaştırır
+        if(hour == t.hour){
+            if(minute > t.minute){
+                return true;
+            }
+        }
+        else if(hour > t.hour){
+            return true;
+        }
+        return false;
     }
     friend ostream& operator<<(ostream& os, const Time& t){//Saat ve dakika değerlerini ekrana yazdırır
         if (t.minute<10 && t.hour<10)
@@ -215,7 +242,7 @@ class Person{
     string getTelNo(){
         return telNo;
     }
-    int getPersonCount(){
+    static int getPersonCount(){
         return personCount;
     }
     static int getListSize(){
@@ -254,6 +281,62 @@ class Person{
 
 int Person::personCount = 0;
 int Person::listSize = 1000;
+
+class Courier : Person {
+    private:
+    Time* orderCompleteTime;
+    int orderNo;
+    static int courierCount;
+    static int listSize;
+    public:
+    Courier(){
+        courierCount++;
+    }
+    Courier(string n, string t, Time *o, int no) : Person(n, t){
+        orderCompleteTime = o;
+        orderNo = no;
+        courierCount++;
+    }
+    static void setCourierCount(int cor){
+        courierCount = cor;
+    } 
+    static int getCourierCount(){
+        return courierCount;
+    }
+    void setOrderCompleteTime(Time *o){
+        orderCompleteTime = o;
+    }
+    string getName(){
+        return name;
+    }
+    string getTelNo(){
+        return telNo;
+    }
+    void setOrderNo(int no){
+        orderNo = no;
+    }
+    Time* getOrderCompleteTime(){
+        return orderCompleteTime;
+    }
+    int getOrderNo(){
+        return orderNo;
+    }
+    static void addCourier(Courier*,Courier list[]);
+    void print(){
+        cout << "Name: " << name << endl;
+        cout << "Tel No: " << telNo << endl;
+        cout << "Order Complete Time: " << *orderCompleteTime << endl;
+        cout << "Order No: " << orderNo << endl;
+    }
+};
+
+int Courier::listSize = 100;
+int Courier::courierCount = 0;
+Courier courierList[100];
+
+Time SAAT;
+
+double a = SAAT.getHour(), b = SAAT.getMinute(); //
 
 class order : Clothes{
     private:
@@ -302,33 +385,43 @@ class order : Clothes{
     Time getDeliveryTime(){
         return deliveryTime;
     }
-    int getOrderCount(){
+    static int getOrderCount(){
         return orderCount;
     }
     int getListSize(){
         return listSize;
     }
     void print(){
-        cout << "Order No: " << orderNo << endl;
-        cout << "Order Price: " << orderPrice<<"TL" << endl;
-        cout << "Order Time: " << orderTime << endl;
-        cout << "Delivery Time: " << deliveryTime << endl;
-        Clothes::print();
+        mu.lock();
+        Time comp(a,b);
+        if (comp>deliveryTime)
+        {
+            fark = (deliveryTime.getHour()-orderTime.getHour())*60+(deliveryTime.getMinute()-orderTime.getMinute());
+            cout << "Order No: " << orderNo << endl;
+            cout << "Order Price: " << orderPrice<<"TL" << endl;
+            cout << "Order Time: " << orderTime << endl;
+            cout << "Delivery Time: " << deliveryTime<< " Sipariş "<< fark << " dakikada teslim edildi! " << endl;
+            ::orderNo--;
+            cout << "Kurye Bilgileri : " << courierList[orderNo].getName() <<"Tel: "<< courierList[orderNo].getTelNo() << endl;
+            cout << "---Ürün Bilgileri---"<<endl;
+            Clothes::print();
+        }else{
+            fark = (deliveryTime.getHour()-orderTime.getHour())*60+(deliveryTime.getMinute()-orderTime.getMinute());
+            cout << "Order No: " << orderNo << endl;
+            cout << "Order Price: " << orderPrice<<"TL" << endl;
+            cout << "Order Time: " << orderTime << endl;
+            cout << "Order - Delivery Time: "<< fark <<endl;
+            cout << "Delivery Time: " << deliveryTime << endl;
+            cout << "---Ürün Bilgileri---"<<endl;
+            Clothes::print();
+        }
+        mu.unlock();
+        
     }
     int orderDeliveryTime(){
         return deliveryTime.getHour() - orderTime.getHour();
     }
-    static void addOrder(order *o, order list[]){//Sipariş ekleme fonksiyonu
-        
-        if(orderCount < listSize){//Liste dolu değilse
-            list[orderCount] = *o;//Siparişi listeye ekler
-            clotheCount--;//Kıyafet sayısını azaltır
-            delClothe(*o,clothesList);//Kıyafeti siler
-        }
-        else{
-            cout << "Sepet Dolu!" << endl;
-        }
-    }
+    static void addOrder(order *o, order list[],Courier*);
     static void delOrder(order o, order *list){//Sipariş silme fonksiyonu
         for(int i = 1; i <= orderCount; i++){//Sipariş sayısı kadar döner
             if(list[i].getOrderNo() == o.getOrderNo()){//Sipariş numarası eşitse
@@ -451,37 +544,34 @@ class Admin : Person {
     }
 };
 
-class Courier : Person {
-    private:
-    Time* orderCompleteTime;
-    int* orderNo;
-    public:
-    Courier(string n, string t, Time *o, int *no) : Person(n, t){
-        orderCompleteTime = o;
-        orderNo = no;
+string randomName(int length) {
+
+  char consonents[] = {'b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','z'};
+  char vowels[] = {'a','e','i','o','u','y'};
+
+  string name = "";
+
+  int random = rand() % 2;
+  int count = 0;
+
+  for(int i = 0; i < length; i++) {
+
+    if(random < 2 && count < 2) {
+      name = name + consonents[rand() % 19];
+      count++;
     }
-    ~Courier(){
-        cout << "Courier deleted!" << endl;
+    else {
+      name = name + vowels[rand() % 5];
+      count = 0;
     }
-    void setOrderCompleteTime(Time *o){
-        orderCompleteTime = o;
-    }
-    void setOrderNo(int *no){
-        orderNo = no;
-    }
-    Time* getOrderCompleteTime(){
-        return orderCompleteTime;
-    }
-    int* getOrderNo(){
-        return orderNo;
-    }
-    void print(){
-        cout << "Name: " << name << endl;
-        cout << "Tel No: " << telNo << endl;
-        cout << "Order Complete Time: " << *orderCompleteTime << endl;
-        cout << "Order No: " << *orderNo << endl;
-    }
-};
+
+    random = rand() % 2;
+
+  }
+
+  return name;
+}
+
 
 int admin = -1;//Admin girişi kontrolü
 bool menu = true;//Menü kontrolü
@@ -492,20 +582,51 @@ void userLogin();
 void orders();
 User *userList[100];//Kullanıcı listesi
 
-int orderNo = 0;//Sipariş numarası
+void order::addOrder(order *o,order list[],Courier *c){//Sipariş ekleme fonksiyonu
+        
+    if(orderCount < listSize){//Liste dolu değilse
+        list[orderCount] = *o;//Siparişi listeye ekler
+        clotheCount--;//Kıyafet sayısını azaltır
+        delClothe(*o,clothesList);//Kıyafeti siler
+    }
+    else{
+        cout << "Sepet Dolu!" << endl;
+    }
+    for (int i = 0; i < Courier::getCourierCount(); i++)
+    {
+        if (c->getName()==courierList[i].getName())
+        {
+            break;
+        }
+        else{
+            Courier::addCourier(c,courierList);
+            break;
+        }
+    }
+    
+}
 
-Time SAAT;
-
-double a = SAAT.getHour(), b = SAAT.getMinute(); //
+void Courier::addCourier(Courier* o,Courier list[]){
+    if(courierCount<listSize){
+        list[courierCount] = *o;
+    }else{
+        cout << "Kadro Dolu!"<<endl;
+    }
+}
 
 void giveOrder(){//Sipariş verme
+
+    srand(time(NULL));//Rastgele sayı üretimi için
     mu.lock();//Kilit
 
     Time orderTime = Time(a,b);//Sipariş zamanı
-    Time deliveryTime(0,0);//Teslimat zamanı
+    Time deliveryTime(a+(rand() % 2+0),b +(rand() % 45 +0));//Teslimat zamanı
     
     mu.unlock();//Kilit aç
     int opt;//Seçenek
+    int j;
+    int gozlem = Courier::getCourierCount();
+    int gozle1= Person::getPersonCount();
 
     Clothes::orderClotes(clothesList);//Kıyafetleri listeleme
     cout << "Geri dönmek için 0 tuşuna basın. "<<endl;
@@ -527,11 +648,38 @@ void giveOrder(){//Sipariş verme
     for (int i = 1; i <= Clothes::getClotheCount(); i++) //Kıyafet sayısı kadar döngü
     {
         if (opt == i)
-        {
-            order::addOrder(new order(++orderNo, clothesList[i].getPrice(), orderTime, deliveryTime, //Sipariş ekleme
+        {   
+            if(Courier::getCourierCount() == 0)
+            {   
+                Time *nT = new Time(deliveryTime.getHour(),deliveryTime.getMinute());
+                Courier *n = new Courier(randomName(rand() % 10 + 3),randomName(rand() % 12 + 5),nT,orderNo);
+                Courier::addCourier(n,courierList);
+                order::addOrder(new order(++orderNo, clothesList[i].getPrice(), orderTime, deliveryTime, //Sipariş ekleme
                 clothesList[i].getCategory(), clothesList[i].getName(),
-                    clothesList[i].getPrice(), clothesList[i].getSize(), clothesList[i].getColor()), orderList);
-            cout << "Siparişiniz başarıyla alındı! "<< endl<<endl;
+                    clothesList[i].getPrice(), clothesList[i].getSize(), clothesList[i].getColor()), orderList, &courierList[1]);
+                cout << "Siparişiniz başarıyla alındı! "<< endl<<endl;
+                break;
+            }else{
+                for (j = 1; j <= Courier::getCourierCount(); j++){
+                    
+                    if(courierList[j].getOrderCompleteTime()->getHour() > a){
+                        Time *nT1 = new Time(deliveryTime.getHour(),deliveryTime.getMinute());
+                        order::addOrder(new order(++orderNo, clothesList[i].getPrice(), orderTime, deliveryTime, //Sipariş ekleme
+                            clothesList[i].getCategory(), clothesList[i].getName(),
+                                clothesList[i].getPrice(), clothesList[i].getSize(), clothesList[i].getColor()), orderList, new Courier(
+                                    randomName(rand() % 10 + 3),randomName(rand() % 12 + 5),nT1,orderNo
+                                ));
+                        cout << "Siparişiniz başarıyla alındı! "<< endl<<endl;
+                        break;
+                    }else{
+                        order::addOrder(new order(++orderNo, clothesList[i].getPrice(), orderTime, deliveryTime, //Sipariş ekleme
+                            clothesList[i].getCategory(), clothesList[i].getName(),
+                                clothesList[i].getPrice(), clothesList[i].getSize(), clothesList[i].getColor()), orderList, &courierList[j]);
+                        cout << "Siparişiniz başarıyla alındı! "<< endl<<endl;
+                        break;
+                    }
+                }
+            }
             break;
         }else if(opt == 0){//Geri dönmek için 0 tuşuna basın.
             break;
@@ -746,8 +894,14 @@ void userLogin(){
     }
 }
 
-void SystemLogin(){
+void showOrders(){
+    cout << endl;
     
+    order::printList(orderList);
+
+}
+
+void SystemLogin(){
     //Sistem giriş menüsü
     int c;
     cout << "1. Yönetici Girişi " << endl;
@@ -796,6 +950,8 @@ void SystemLogin(){
 }
 
 void mainMenu(){
+    
+    Time timeNow;
 
     //Ana menü
     int choice; //Seçim yapmak için
@@ -857,7 +1013,8 @@ void mainMenu(){
         cout << "2. Siparişleri Görüntüle " << endl;
         cout << "3. Şikayet - Öneri (Geri Bildirimler) " << endl;
         cout << "4. Oturumu Kapat " << endl;
-        cout << "5. Çıkış " << endl;
+        cout << "5. Saati Göster " << endl;
+        cout << "6. Çıkış " << endl;
         
         //Hata yakalama
         try
@@ -876,7 +1033,8 @@ void mainMenu(){
             cout << "2. Siparişleri Görüntüle " << endl;
             cout << "3. Şikayet - Öneri (Geri Bildirimler) " << endl;
             cout << "4. Oturumu Kapat " << endl;
-            cout << "5. Çıkış " << endl;
+            cout << "5. Saati Göster " << endl;
+            cout << "6. Çıkış " << endl;
             cin >> choice;
         }
 
@@ -904,6 +1062,13 @@ void mainMenu(){
                 admin = -1;
                 break;
             case 5:
+                mu.lock();
+                timeNow.setHour(a);
+                timeNow.setMinute(b);
+                cout<<endl<<"Sistem Saati: "<< timeNow<<endl<<endl;
+                mu.unlock();
+                break;
+            case 6:
                 cout << "Çıkış yapılıyor..." << endl;
                 menu = false;
                 break;
@@ -1008,6 +1173,9 @@ void Time::setTimer(Time SAAT)
 
 int main(){
     setlocale(LC_ALL, "Turkish");
+
+    srand(time(NULL));
+    Courier::setCourierCount(0);
 
     thread t1(Time::setTimer, SAAT);
     thread t2(run);
