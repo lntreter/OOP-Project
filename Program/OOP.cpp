@@ -4,6 +4,7 @@
 #include<limits>
 #include<conio.h>
 #include<locale.h>
+#include <thread>
 
 using namespace std;
 
@@ -12,7 +13,10 @@ class Time{ //Zaman Sınıfı
     int hour;
     int minute;
     public:
-    Time(){}
+    Time(){
+        hour = rand() % 23 + 0;
+        minute = rand() % 59 + 0;
+    }
     Time(int h, int m){//Kurucu fonksiyon
         hour = h;
         minute = m;
@@ -32,6 +36,27 @@ class Time{ //Zaman Sınıfı
     void print(){ //Saat ve dakika değerlerini ekrana yazdırır
         cout << hour << ":" << minute << endl;
     }
+    static void setTimer(Time SAAT){ //Saat ve dakika değerlerini ayarlar
+        int a = rand() % 23 + 0,b =rand() % 59 + 0;;
+        SAAT.setHour(a);
+        SAAT.setMinute(b);
+
+        while (true)
+        {
+            b += 0.1;
+            if (b >= 60)
+            {
+                a += b / 60;
+                b = b % 60;
+            }
+            SAAT.setHour(a);
+            SAAT.setMinute(b);
+            if (SAAT.getMinute()==0)
+            {
+                cout <<endl<< "Saat: " << SAAT << endl<<endl;
+            }
+        }
+    }
     void delay(int d){ //Saat ve dakika değerlerini gecikme değeri kadar arttırır
         minute += d;
         if(minute >= 60){
@@ -40,7 +65,16 @@ class Time{ //Zaman Sınıfı
         }
     }
     friend ostream& operator<<(ostream& os, const Time& t){//Saat ve dakika değerlerini ekrana yazdırır
-        os << t.hour << ":" << t.minute;
+        if (t.minute<10 && t.hour<10)
+        {
+            os <<"0"<< t.hour << ":0" << t.minute;
+        }else if(t.minute<10){
+            os << t.hour << ":0" << t.minute;
+        }else if(t.hour<10){
+            os <<"0"<< t.hour << ":" << t.minute;
+        }else{
+            os << t.hour << ":" << t.minute;
+        }
         return os;
     }
 };
@@ -150,7 +184,7 @@ void Clothes::delClothe(Clothes c,Clothes list[]){//Kıyafet siler
             
             for (int k = i; k < clotheCount; k++)//Silinen kıyafetin yerine gelen kıyafetlerin yerini değiştirir
             {
-                list[i] = list[i+1];//Kıyafetlerin yerini değiştirir
+                list[k] = list[k+1];//Kıyafetlerin yerini değiştirir
             }
             clotheCount--;
         }
@@ -548,7 +582,7 @@ int orderNo = 0;//Sipariş numarası
 
 void giveOrder(){//Sipariş verme
     Time orderTime;//Sipariş zamanı
-    Time deliveryTime;//Teslimat zamanı
+    Time deliveryTime(0,0);//Teslimat zamanı
     int opt;//Seçenek
 
     Clothes::orderClotes(clothesList);//Kıyafetleri listeleme
@@ -1028,9 +1062,11 @@ void mainMenu(){
 
 int main(){
     setlocale(LC_ALL, "Turkish");
+    
     while (menu) 
     {
         mainMenu();
     }
     return 0;
 }
+
