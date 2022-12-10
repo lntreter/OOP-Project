@@ -1005,6 +1005,7 @@ int main(){
     thread t1(Time::setTimer, SAAT);
     thread t2(run);
     t1.join();
+    t1.detach();
     t2.join();
     
     return 0;
