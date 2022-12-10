@@ -5,6 +5,9 @@
 #include<conio.h>
 #include<locale.h>
 #include <thread>
+#include <mutex>
+
+mutex mu;
 
 using namespace std;
 
@@ -492,8 +495,10 @@ int orderNo = 0;//Sipariş numarası
 Time SAAT;
 
 void giveOrder(){//Sipariş verme
+    mu.lock();
     Time orderTime = SAAT;//Sipariş zamanı
     Time deliveryTime(0,0);//Teslimat zamanı
+    mu.unlock();
     int opt;//Seçenek
 
     Clothes::orderClotes(clothesList);//Kıyafetleri listeleme
