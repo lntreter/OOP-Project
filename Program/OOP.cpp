@@ -6,10 +6,12 @@
 #include<locale.h>
 #include <thread>
 #include <mutex>
+#include <semaphore>
+
+using namespace std;
 
 mutex mu;
 
-using namespace std;
 
 class Time{ //Zaman Sınıfı
     private:
@@ -495,10 +497,12 @@ int orderNo = 0;//Sipariş numarası
 Time SAAT;
 
 void giveOrder(){//Sipariş verme
-    mu.lock();
+    mu.lock();//Kilit
+
     Time orderTime = SAAT;//Sipariş zamanı
     Time deliveryTime(0,0);//Teslimat zamanı
-    mu.unlock();
+    
+    mu.unlock();//Kilit aç
     int opt;//Seçenek
 
     Clothes::orderClotes(clothesList);//Kıyafetleri listeleme
@@ -1010,7 +1014,6 @@ int main(){
     thread t1(Time::setTimer, SAAT);
     thread t2(run);
     t1.join();
-    t1.detach();
     t2.join();
     
     return 0;
