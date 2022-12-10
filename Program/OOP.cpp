@@ -496,10 +496,12 @@ int orderNo = 0;//Sipariş numarası
 
 Time SAAT;
 
+double a = SAAT.getHour(), b = SAAT.getMinute(); //
+
 void giveOrder(){//Sipariş verme
     mu.lock();//Kilit
 
-    Time orderTime = SAAT;//Sipariş zamanı
+    Time orderTime = Time(a,b);//Sipariş zamanı
     Time deliveryTime(0,0);//Teslimat zamanı
     
     mu.unlock();//Kilit aç
@@ -987,13 +989,11 @@ void run(){
     }
 }
 
-double a = SAAT.getHour(), b = SAAT.getMinute();
-
 void Time::setTimer(Time SAAT)
 { //Saat ve dakika değerlerini ayarla
     while (menu)
     {
-        b += 0.1;
+        b += 0.000000001;
         if (b >= 60)
         {
             a += b / 60;
@@ -1003,8 +1003,6 @@ void Time::setTimer(Time SAAT)
         {
             a = 0;
         }
-        SAAT.setHour(a);
-        SAAT.setMinute(b);
     }
 }
 
