@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "semaphore": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "ostream": "cpp",
+        "xstring": "cpp"
     }
 }
