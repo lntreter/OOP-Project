@@ -366,7 +366,11 @@ int Courier::listSize = 1000;
 int Courier::courierCount = 0;
 Courier courierList[1000];
 
+<<<<<<< HEAD
 Time SAAT(4, 0);
+=======
+Time SAAT(4,0);
+>>>>>>> 786c4a1a5c389efb8258973bebb6eb74f2eb8506
 
 double a = SAAT.getHour(), b = SAAT.getMinute();
 
@@ -437,7 +441,11 @@ public:
     order orderList[100];//Sipariş listesi
     int orderCount;
     User() { ; }
+<<<<<<< HEAD
     User(string n, string t, string ni, string m, string a, string p, string sc, string b) : Person(n, t), saleCoupon("0") {
+=======
+    User(string n, string t, string ni, string m, string a, string p, string sc, string b) : Person(n, t) ,saleCoupon("0") {
+>>>>>>> 786c4a1a5c389efb8258973bebb6eb74f2eb8506
         nickname = ni;
         mail = m;
         adress = a;
@@ -500,7 +508,11 @@ public:
 };
 
 int User::userCount = 0;
+<<<<<<< HEAD
 User u("", "", "", "", "", "", "", "");
+=======
+User u("","","","","","","","");
+>>>>>>> 786c4a1a5c389efb8258973bebb6eb74f2eb8506
 
 order::order(int o, double p, Time t, Time d, string c, string n, double pr, string s, string col) : Clothes(c, n, pr, s, col) {
     orderNo = o;
@@ -638,7 +650,11 @@ int j = 1;
 void feedback() {
     string feedbackyaz;
     if (admin == 1)
+<<<<<<< HEAD
     {
+=======
+    {   
+>>>>>>> 786c4a1a5c389efb8258973bebb6eb74f2eb8506
         if (feedBack == "") {
             cout << "Herhangi bir geri bildirim yapılmamış. " << endl << endl;
         }
@@ -646,7 +662,11 @@ void feedback() {
         {
             int control = -1;
             cout << feedBack << endl << endl << endl;
+<<<<<<< HEAD
             cout << "Geri bildirimlere cevap vermek için '1', çıkmak için '0' tuşuna basın. "; cin >> control; cout << endl;
+=======
+            cout << "Geri bildirimlere cevap vermek için '1', çıkmak için '0' tuşuna basın. "; cin >>control; cout << endl;
+>>>>>>> 786c4a1a5c389efb8258973bebb6eb74f2eb8506
             if (control == 1)
             {
                 cout << "Lütfen Mesajınızı yazın: "; getline(cin >> ws, feedbackyaz);
@@ -664,6 +684,7 @@ void feedback() {
         }
     }
     else if (admin == 0)
+<<<<<<< HEAD
     {
         cout << feedBack << endl << endl << endl;
         if (feedBack == "") {
@@ -675,6 +696,19 @@ void feedback() {
         {
             cout << "Lütfen Mesajınızı yazın: "; getline(cin >> ws, feedbackyaz);
             feedBack += "\n\n" + u.getNickame() + ": " + feedbackyaz;
+=======
+    {   
+        cout << feedBack<<endl<<endl<<endl;
+        if (feedBack == "") {
+            cout << "Henüz kimse geri bildirim yapmamış. " << endl<<endl;
+        }
+        int control = -1;
+        cout << "Bir geri bildirim mesajı yazmak için '1', geri dönmek için '0' tuşuna basın. "; cin >>control; cout << endl;
+        if (control == 1)
+        {
+            cout << "Lütfen Mesajınızı yazın: "; getline(cin >> ws, feedbackyaz);
+            feedBack += "\n\n"+ u.getNickame() + ": " + feedbackyaz;
+>>>>>>> 786c4a1a5c389efb8258973bebb6eb74f2eb8506
             cout << "Mesajınız başarıyla gönderildi! " << endl << endl;
         }
         else if (control == 0)
@@ -719,7 +753,11 @@ void giveOrder() {//Sipariş verme
     for (int i = 1; i <= Clothes::getClotheCount(); i++) //Kıyafet sayısı kadar döngü
     {
         if (opt == i)
+<<<<<<< HEAD
         {
+=======
+        {   
+>>>>>>> 786c4a1a5c389efb8258973bebb6eb74f2eb8506
             if (Courier::getCourierCount() == 100) {
                 Courier::setCourierCount(0);
             }
@@ -911,7 +949,11 @@ void products() {
         cout << endl;
         break;
     case 4:
+<<<<<<< HEAD
         cout << endl;
+=======
+        cout << endl;   
+>>>>>>> 786c4a1a5c389efb8258973bebb6eb74f2eb8506
         break;
     default:
         cout << "Hatalı bir giriş yaptınız lütfen tekrar deneyin !" << endl;
@@ -941,7 +983,11 @@ void User::signUp() {
     //Kullanıcıyı oluştur
 
     try {
+<<<<<<< HEAD
         User* a = new User(name, telNo, nickname, mail, adress, pass, saleCoupon, bDate);
+=======
+        User *a = new User(name, telNo, nickname, mail, adress, pass, saleCoupon, bDate);
+>>>>>>> 786c4a1a5c389efb8258973bebb6eb74f2eb8506
         a->orderCount = 0;
         userList[userCount] = *a;
         cout << "Kayıt Başarılı! ---> Lütfen Giriş Yapınız! " << endl;
@@ -1205,7 +1251,11 @@ void mainMenu() {
             cout << "Oturum Kapatılıyor..." << endl;
             for (int i = 1; i <= User::getUserCount(); i++)
             {
+<<<<<<< HEAD
                 if (u.getNickame() == userList[i].getNickame()) {
+=======
+                if (u.getNickame()==userList[i].getNickame()) {
+>>>>>>> 786c4a1a5c389efb8258973bebb6eb74f2eb8506
                     userList[i] = u;
                     break;
                 }
@@ -1285,10 +1335,17 @@ void mainMenu() {
             for (int i = 1; i <= User::getUserCount(); i++)
             {
                 userList[i].print();
+<<<<<<< HEAD
                 cout << "Seçmek için " << i << " tuşuna basın" << endl << endl;
             }
             getline(cin >> ws, userchoice);
             if (userchoice == "1")
+=======
+                cout << "Seçmek için " << i << " tuşuna basın" << endl<<endl;
+            }
+            getline(cin>>ws,userchoice);
+            if (userchoice =="1")
+>>>>>>> 786c4a1a5c389efb8258973bebb6eb74f2eb8506
             {
                 string coupon;
                 cout << "Vermek istediğiniz kuponun indirim tutarını giriniz: (Sadece sayı olarak!)"; getline(cin >> ws, coupon);
