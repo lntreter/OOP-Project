@@ -197,6 +197,7 @@ int Clothes::clotheCount = 0;
 int Clothes::listSize = 500;
 Clothes clothesList[500];//Kiyafetlerin tutulduğu liste
 
+
 void Clothes::orderClotes(Clothes* list) {//Siparis verme fonksiyonu
     for (int i = 1; i <= clotheCount; i++)
     {
@@ -240,6 +241,25 @@ void Clothes::delClothe(Clothes c, Clothes list[]) {//Kiyafet siler
             tmp[i] = list[i];//Geçici listeye kiyafetleri ekler
     }
     list = tmp;//Geçici listeyi ana listeye atar
+}
+
+void fillup() {
+    Clothes c1("Giysi", "Pantolon", 200, "M", "Kirmizi"), c2("Giysi", "Tişort", 80, "S", "Mavi"), c3("Giysi", "Gomlek", 150, "M", "Yesil"),
+        c4("Aksesuar", "Kolye", 900, "Dusuk", "Gumus"), c5("Aksesuar", "Bileklik", 1700, "Orta", "Altin"), c6("Aksesuar", "Yuzuk", 3500, "Yuksek", "Altin"),
+        c7("Ayakkabi", "Nike", 300, "40 EU", "Beyaz"), c8("Ayakkabi", "Adidas", 300, "42 EU", "Siyah"), c9("Ayakkabi", "Puma", 300, "38 EU", "Beyaz"),
+        c10("Giysi", "Şort", 60, "L", "Gri"), c11("Aksesuar", "Gerdanlik", 2500, "Dusuk", "Gumus"), c12("Ayakkabi", "Reebok", 300, "41 EU", "Siyah");
+	clothesList[1] = c1;
+	clothesList[2] = c2;
+	clothesList[3] = c3;
+	clothesList[4] = c4;
+	clothesList[5] = c5;
+	clothesList[6] = c6;
+	clothesList[7] = c7;
+	clothesList[8] = c8;
+	clothesList[9] = c9;
+	clothesList[10] = c10;
+	clothesList[11] = c11;
+	clothesList[12] = c12;
 }
 
 class Person { //kişi sınıfı
@@ -582,6 +602,9 @@ public:
     Admin(string n, string t, string p) : Person(n, t) {
         pass = p;
     }
+    string getName() {
+		return name;
+    }
     void setPass(string p) {
         pass = p;
     }
@@ -594,6 +617,8 @@ public:
         cout << "Pass: " << pass << endl;
     }
 };
+
+Admin nowAdmin("", "", ""); //anlık admin
 
 int admin = -1;//Admin girisi kontrolü
 bool menu = true;//Menü kontrolü
@@ -653,7 +678,7 @@ void feedback() {// feedback yazma fonskiyonu
             if (control == 1)
             {
                 cout << "Lütfen Mesajinizi yazin: "; getline(cin >> ws, feedbackyaz); //yazılacak feedback
-                feedBack += "\n\nYetkili Kullanici: " + feedbackyaz; //yazılan feedbacki asıl stringe ekler
+                feedBack += "\n\n" + nowAdmin.getName() + ": " + feedbackyaz; //yazılan feedbacki asıl stringe ekler
                 cout << "Mesajiniz basariyla gönderildi! " << endl << endl; 
                 if (fb.is_open()) { //Dosya açildiysa
                     fb << "\n\nYetkili Kullanici: " + feedbackyaz << endl;   //Kullanici adi ve sifreyi dosyaya yaz
@@ -901,7 +926,7 @@ void products() {
         getline(cin >> ws, name);
         cout << "Ürünün fiyatini giriniz: " << endl;
         cin >> price;
-        cout << "Ürünün bedenini (Small: S, Medium: M, Large: L) giriniz: " << endl;
+        cout << "Ürünün bedenini, numarasini veya kalitesini (S, M, L), (40 EU, 36 EU, 42 EU), (Dusuk, Orta, Yuksek) giriniz: " << endl;
         getline(cin >> ws, size);
         cout << "Ürünün rengini giriniz: " << endl;
         getline(cin >> ws, color);
@@ -1027,25 +1052,72 @@ void User::signUp() {
     }
 }
 
+Admin admin1("Burhan Sahin", "05452482420", "burhan2002"), admin2("Berhan Saydam", "05418763490", "progp2000");
+
 void adminLogin() {
-    cout << "Lütfen Admin sifresini Giriniz: " << endl;
+    //cout << "Lütfen Admin sifresini Giriniz: " << endl;
+    //cout << endl;
+
+    ////Admin sifresini al
+
+    //string pass;
+
+    //cout << "Admin sifre: "; getline(cin >> ws, pass);
+    //cout << endl;
+
+    //if (pass == "admin")
+    //{
+    //    cout << "sifre Doğru! Admin Olarak Giris Yapiliyor..." << endl;
+    //    cout << endl;
+    //    admin = 1;
+    //}
+    //else {
+    //    cout << "sifre Yanlis! " << endl;
+    //    cout << endl;
+    //}
+
+    //Kullanici adi ve sifreyi al
+
+    cout << "Lütfen Giris Yapiniz! " << endl;
+    cout << endl;
+    string pass, passCheck, line;
+    cout << "Sifrenizi Giriniz: "; pass = hidePass();
     cout << endl;
 
-    //Admin sifresini al
+    passCheck = pass;
 
-    string pass;
+    fstream dosya("users.txt", ios::in); //Kullanici bilgilerini oku
 
-    cout << "Admin sifre: "; getline(cin >> ws, pass);
-    cout << endl;
+    bool tf = false; //Kullanici bilgileri doğruysa true
 
-    if (pass == "admin")
-    {
-        cout << "sifre Doğru! Admin Olarak Giris Yapiliyor..." << endl;
-        cout << endl;
-        admin = 1;
+    if (dosya.is_open()) { //Dosya açildiysa
+
+        while (!dosya.eof()) { //Dosya sonuna gelene kadar
+
+            getline(dosya, line); //Dosyadan satir satir oku
+
+            int offset; //Satirda aranan kelimenin bulunduğu konumu tutar
+
+            //Satirda aranan kelime varsa
+            if ((offset = line.find(passCheck, 0)) != string::npos) {
+                cout << "Bilgiler Doğru! Giris Yapiliyor... " << endl;
+                cout << endl;
+                admin = 1;
+                if (pass == admin1.getPass())
+                {
+					nowAdmin = admin1;
+                }
+				else if (pass == admin2.getPass())
+				{
+					nowAdmin = admin2;
+				}
+                tf = true;
+            }
+        }
     }
-    else {
-        cout << "sifre Yanlis! " << endl;
+    //Kullanici bilgileri yanlissa
+    if (!tf) {
+        cout << "Bilgileriniz Yanlis! " << endl;
         cout << endl;
     }
 }
@@ -1520,6 +1592,7 @@ int main() {
     setlocale(LC_ALL, "Turkish");
 
     srand(time(NULL));
+    fillup();
     Courier::setCourierCount(0);
     thread t1(Time::setTimer, SAAT); //sistem saati için bir iş parçacığı oluşturur
     thread t2(run); //ana iş parçacığını oluşturur
