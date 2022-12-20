@@ -10,19 +10,19 @@
 
 using namespace std;
 
-mutex mu;
+mutex mu; // mutex for critical section
 
-string feedBack;
+string feedBack; //feedback stringi
 
-int fark;
+int fark; // zamanlar arasındaki fark
 
 int orderNo = 0;//Siparis numarasi
 
 string nameList[] = { "Celalettin Mantar","Burhan sahin","Berhan Saydam","Talha Yay","Sefa Subasi",
-    "Cemil NovruzOğlu","Mustafa Novruzğlu","Mehmet sahin","Talha Subasi" };
+	"Cemil NovruzOğlu","Mustafa Novruzğlu","Mehmet sahin","Talha Subasi" }; // isimler
 
 string telList[] = { "0532 123 45 67","0532 123 45 68","0532 123 45 69","0532 123 45 70","0532 123 45 71",
-    "0532 123 45 72","0532 123 45 73","0532 123 45 74","0532 123 45 75" };
+    "0532 123 45 72","0532 123 45 73","0532 123 45 74","0532 123 45 75" }; //telefon numaraları
 
 class Time { //Zaman Sinifi
 private:
@@ -126,7 +126,7 @@ public:
     }
 };
 
-class Clothes {
+class Clothes { //ürünler sınıfı
 protected:
     string category;
     string name;
@@ -242,7 +242,7 @@ void Clothes::delClothe(Clothes c, Clothes list[]) {//Kiyafet siler
     list = tmp;//Geçici listeyi ana listeye atar
 }
 
-class Person {
+class Person { //kişi sınıfı
 protected:
     string name;
     string telNo;
@@ -316,7 +316,7 @@ public:
 int Person::personCount = 0;
 int Person::listSize = 1000;
 
-class Courier : Person {
+class Courier : Person { // kurye sınıfı
 private:
     Time* orderCompleteTime;
     int orderNo;
@@ -367,11 +367,11 @@ int Courier::listSize = 1000;
 int Courier::courierCount = 0;
 Courier courierList[1000];
 
-Time SAAT(4, 0);
+Time SAAT(4, 0); //sistem saaati başlangıç değeri
 
-double a = SAAT.getHour(), b = SAAT.getMinute();
+double a = SAAT.getHour(), b = SAAT.getMinute(); //saat sayısal değerler
 
-class order : Clothes {
+class order : Clothes { //sipariş sınıfı
 private:
     int orderNo;
     double orderPrice;
@@ -425,7 +425,7 @@ public:
 
 int order::listSize = 100;
 
-class User : Person {
+class User : Person { //kullanıcı sınıfı
 private:
     string nickname;
     string mail;
@@ -496,11 +496,11 @@ public:
         cout << "Birth Date: " << bDate << endl;
         cout << "--------------------------" << endl;
     }
-    static void signUp();
+    static void signUp(); 
 };
 
 int User::userCount = 0;
-User u("", "", "", "", "", "", "");
+User u("", "", "", "", "", "", ""); //anlık kullanıcı
 
 order::order(int o, double p, Time t, Time d, string c, string n, double pr, string s, string col) : Clothes(c, n, pr, s, col) {
     orderNo = o;
@@ -537,7 +537,7 @@ void order::printList(order* list) {
     cout << endl;
 }
 
-void order::print() {
+void order::print() { //Siparişi yazırır
     mu.lock();
     Time comp(a, b);
     mu.unlock();
@@ -574,7 +574,7 @@ void order::print() {
     }
 }
 
-class Admin : Person {
+class Admin : Person {// admin sınıfı
 private:
     string pass;
 public:
@@ -625,7 +625,7 @@ void order::addOrder(order* o, order list[], Courier* c) {//Siparis ekleme fonks
     Courier::addCourier(c, courierList);
 }
 
-void Courier::addCourier(Courier* o, Courier list[]) {
+void Courier::addCourier(Courier* o, Courier list[]) { //kurye ekleme fonksiyonu
     if (courierCount < listSize) {
         list[courierCount] = *o;
     }
@@ -637,24 +637,24 @@ void Courier::addCourier(Courier* o, Courier list[]) {
 int j = 1;
 
 
-void feedback() {
+void feedback() {// feedback yazma fonskiyonu
     string feedbackyaz;
-    fstream fb("suggestions.txt", ios::app);
-    if (admin == 1)
+    fstream fb("suggestions.txt", ios::app); //oluşturulan dosya
+    if (admin == 1) //kullanıcı admin ise
     {
-        if (feedBack == "") {
+        if (feedBack == "") {//string boş mu diye kontrol eder
             cout << "Herhangi bir geri bildirim yapilmamis. " << endl << endl;
         }
         else
         {
             int control = -1;
-            cout << feedBack << endl << endl << endl;
-            cout << "Geri bildirimlere cevap vermek için '1', çikmak için '0' tusuna basin. "; cin >> control; cout << endl;
+            cout << feedBack << endl << endl << endl; //stringi yazdırır
+            cout << "Geri bildirimlere cevap vermek için '1', çikmak için '0' tusuna basin. "; cin >> control; cout << endl;//kullanıcıya sorar
             if (control == 1)
             {
-                cout << "Lütfen Mesajinizi yazin: "; getline(cin >> ws, feedbackyaz);
-                feedBack += "\n\nYetkili Kullanici: " + feedbackyaz;
-                cout << "Mesajiniz basariyla gönderildi! " << endl << endl;
+                cout << "Lütfen Mesajinizi yazin: "; getline(cin >> ws, feedbackyaz); //yazılacak feedback
+                feedBack += "\n\nYetkili Kullanici: " + feedbackyaz; //yazılan feedbacki asıl stringe ekler
+                cout << "Mesajiniz basariyla gönderildi! " << endl << endl; 
                 if (fb.is_open()) { //Dosya açildiysa
                     fb << "\n\nYetkili Kullanici: " + feedbackyaz << endl;   //Kullanici adi ve sifreyi dosyaya yaz
                     fb.close(); //Dosyayi kapat
@@ -673,7 +673,7 @@ void feedback() {
             }
         }
     }
-    else if (admin == 0)
+    else if (admin == 0) //kulanıcı admin değilse
     {
         cout << feedBack << endl << endl << endl;
         if (feedBack == "") {
@@ -803,11 +803,11 @@ void giveOrder() {//Siparis verme
                     else {
                         z++;
                     }
-                } while (z <= Courier::getCourierCount());
+                } while (z <= Courier::getCourierCount()); //kurye sayısı kadar tekrar eder
 
                 z = 1;
 
-                if (check == 999)
+                if (check == 999)//zaten kurye eklendiyse else e geçmez
                 {
                     z = 1;
                 }
@@ -954,32 +954,31 @@ void products() {
 string hidePass() {
 
 START:
-    char passw[32];
+    char passw[32]; //char arrayi oluşturur
     int p = 0;
-    char tmpC;
+	char tmpC; //araya geçici olarak karakteri atar
     for (p = 0;;) {
-        tmpC = _getch();
+        tmpC = _getch(); //kullanıcıdan karakteri ister
         if ((tmpC >= 'a' && tmpC <= 'z') || (tmpC >= 'A' && tmpC <= 'Z') || (tmpC >= '0' && tmpC <= '9'))
         {
-            passw[p] = tmpC;
+			passw[p] = tmpC; //eğer alınan karakter harf veya rakam ise passw arrayine atar
             p++;
-            cout << "*";
+            cout << "*"; //ekrana yıldız yazdırır
         }
         if (tmpC == '\b' && p >= 1)
         {
-            cout << "\b \b";
+            cout << "\b \b"; //silerse siler
             --p;
         }
         if (tmpC == '\r')
         {
-            passw[p] = '\0';
+            passw[p] = '\0'; //entera basınca işlemi sonlandırır
             break;
         }
     }
     if (p <= 5)
     {
         cout << "Sifreniz en az 6 basamakli olmalidir! " << endl;
-        _getch();
         goto START;
     }
     return passw;
@@ -1080,6 +1079,7 @@ RETRY:
             if (offset != string::npos) {
 				//okunan satirdaki aranan kelimeyi degistir
                 dosya2 << u.getNickame() + pass + "\n";
+                u.setPass(pass);
                 cout << "Şifreniz başarıyla değiştirilmiştir!" << endl;
                 cout << endl;
 			}
@@ -1147,7 +1147,7 @@ void userLogin() {
     }
 }
 
-void showOrders() {
+void showOrders() { //siparişleri listeler
     cout << endl;
 
     order::printList(u.orderList);
@@ -1314,19 +1314,19 @@ void mainMenu() {
             break;
         case 3:
             system("cls");
-            cout << "---Sikayet - Oneri (Geri Bildirimler)---" << endl;
+            cout << "---Sikayet - Oneri (Geri Bildirimler)---" << endl; //ger bildirimler
             feedback();
             break;
         case 4:
             system("cls");
-            cout << "---Sifre Degistirme Paneli---" << endl << endl;
+            cout << "---Sifre Degistirme Paneli---" << endl << endl; //şifre değişme
             passReset();
             break;
         case 5:
             cout << "Oturum Kapatiliyor..." << endl;
             for (int i = 1; i <= User::getUserCount(); i++)
             {
-                if (u.getNickame() == userList[i].getNickame()) {
+				if (u.getNickame() == userList[i].getNickame()) { //oturumu kapatmadan önce anlık kullanıcı bilgilerini dizideki kullanıcı bilgilerine eşitle
                     userList[i] = u;
                     break;
                 }
@@ -1334,6 +1334,7 @@ void mainMenu() {
             admin = -1;
             break;
         case 6:
+            //anlık saati yazdırır
             system("cls");
             mu.lock();
             timeNow.setHour(a);
@@ -1393,6 +1394,7 @@ void mainMenu() {
             break;
         case 2:
             system("cls");
+            //kuryeleri düzenleme menüsü
             cout << "---Kuryeler---" << endl;
             cout << "Kuryeleri görüntülemek için 1'e, diğer kuryeleri görüntülemek için 2'ye, devam etmek için 0'a basın. " << endl << endl;
             cin >> kur;
@@ -1421,11 +1423,12 @@ void mainMenu() {
             break;
         case 3:
             system("cls");
-            cout << "---Geri Bildirimler---" << endl;
+			cout << "---Geri Bildirimler---" << endl; //geri bildirimler
             feedback();
             break;
         case 4:
             system("cls");
+            //indirim kodu tanımlama
             cout << "---İndirim Kodlari---" << endl;
             for (int i = 1; i <= User::getUserCount(); i++)
             {
@@ -1489,7 +1492,7 @@ void mainMenu() {
     }
 }
 
-void run() {
+void run() { //çalıştırılacak ana thread
     while (menu)
     {
         mainMenu();
@@ -1518,8 +1521,9 @@ int main() {
 
     srand(time(NULL));
     Courier::setCourierCount(0);
-    thread t1(Time::setTimer, SAAT);
-    thread t2(run);
+    thread t1(Time::setTimer, SAAT); //sistem saati için bir iş parçacığı oluşturur
+    thread t2(run); //ana iş parçacığını oluşturur
+    //threadleri çalıştırır
     t1.join();
     t2.join();
 
